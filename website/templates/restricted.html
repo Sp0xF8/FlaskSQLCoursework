@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block title %}Restricted Access{% endblock %}
+{% block content %}
+
+
+<style>
+    .regMain {
+        width: 90%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+</style>
+
+
+<div class="container-fluid regMain">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">You tried to access a Restricted Website</h4>
+            <p class="card-text">Please navigate to a proper destination.</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
