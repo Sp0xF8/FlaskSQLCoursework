@@ -50,7 +50,7 @@
                         data-bs-parent="#adminPanel">
                         <div class="accordion-body">
 
-                            {% if current_user.id == 2  %}
+                            {% if session.userID == 8  %}
 
                             <table class="table table-striped">
                                 <thead>
@@ -64,12 +64,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
                                     {% for user in userList %}
                                     <tr>
-                                        <th scope="row">{{ user.id }}</th>
-                                        <td>{{ user.firstName }}</td>
-                                        <td>{{ user.lastName}}</td>
-                                        <td>{{ user.email }}</td>
+                                        <th scope="row">{{ user[0] }}</th>
+                                        <td>{{ user[1] }}</td>
+                                        <td>{{ user[2] }}</td>
+                                        <td>{{ user[3] }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

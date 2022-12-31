@@ -58,6 +58,11 @@ def getUserRecord_byEmail(email):
     user = cursor.fetchone()
     return user
 
+def getAllUsers():
+    cursor.execute("SELECT * FROM Users")
+    users = cursor.fetchall()
+    return users
+
 def startSession(user):
     if user:
         session['loggedin'] = True
