@@ -2,10 +2,9 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from datetime import date
 
 
-from .sqlHandeling import userLogin, insertUser, getUserRecord_byEmail, dropUserRecord_byID, loginHelperEmail, stopSession, getAllUsers
+from .sqlHandeling import userLogin, insertUser, getUserRecord_byEmail, dropUserRecord_byID, loginHelperEmail, stopSession, getAllUsers, dropUserRecord_byID, isAdmin, isLoggedin
 
 auth = Blueprint('auth', __name__)
-
 
 # FIX LOGIN MODAL THING
 @auth.route('/login', methods=['GET', 'POST'])
@@ -23,6 +22,10 @@ def login():
 
 @auth.route('/logout')
 def logout():
+    if(not isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
     stopSession()
     return redirect(url_for('auth.login'))
 
@@ -74,6 +77,24 @@ def sign_up():
 @auth.route('/admin', methods=['GET', 'POST'])
 def admin():
 
+    if(not isAdmin()):
+        flash('You require greater permissions to access this page!', category='error')
+        return redirect(url_for('views.restricted'))
+
+    if request.method == 'POST':
+        if (request.form.get('action') == 'deleteUser'):
+            dropUserRecord_byID(request.form.get('userID'))
+            flash('User deleted!', category='success')
+
     users = getAllUsers()
 
     return render_template("admin.html", userList=users)
+
+
+@auth.route('/bookings')
+def bookings():
+    if(not isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+    return render_template("bookings.html")
+

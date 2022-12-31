@@ -101,6 +101,21 @@ def userLogin(email, password):
         flash('Email does not exist.', category='error')
         return False
 
+def isAdmin():
+    if session.get('loggedin'):
+        if session.get('userID') == 8:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def isLoggedin():
+    if session.get('loggedin'):
+        return True
+    else:
+        return False
+
 
 cursor.execute("SELECT * FROM Users")
 #cursor.execute("DESCRIBE Users")

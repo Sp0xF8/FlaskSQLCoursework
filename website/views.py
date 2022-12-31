@@ -7,11 +7,6 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=['GET', 'POST'])
 def home():
     return render_template("home.html")
-
-@views.route('/bookings')
-def bookings():
-    return render_template("bookings.html")
-
 @views.route('/contact')
 def contact():
     return render_template("contact.html")
@@ -27,3 +22,7 @@ def gallery():
 @views.route('/privacy')
 def privacy():
     return render_template("privacy.html")
+
+@views.route('/restricted')
+def restricted():
+    return render_template("restricted.html")
