@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from datetime import date
 
 
-from .sqlHandeling import userLogin, insertUser, getUserRecord_byEmail, dropUserRecord_byID, loginHelperEmail, stopSession
+from .sqlHandeling import userLogin, insertUser, getUserRecord_byEmail, dropUserRecord_byID, loginHelperEmail, stopSession, getAllUsers
 
 auth = Blueprint('auth', __name__)
 
@@ -73,4 +73,7 @@ def sign_up():
 
 @auth.route('/admin', methods=['GET', 'POST'])
 def admin():
-    return render_template("admin.html")
+
+    users = getAllUsers()
+
+    return render_template("admin.html", userList=users)
