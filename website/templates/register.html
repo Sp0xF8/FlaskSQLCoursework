@@ -1,0 +1,96 @@
+{% extends "base.html" %} {% block title %}Register{% endblock %}
+{% block content %}
+
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+</style>
+
+
+<div class="container-fluid regMain">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Registration</h4>
+            <p class="card-text">Sign up for a booking account!</p>
+
+            <form method="POST">
+
+                <hr>
+                <h5 class="h5">Personal Details</h5>
+                <br>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">First Name</span>
+                    <input type="text" aria-label="First name" id="firstName" name="firstName" class="form-control" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Last Name</span>
+                    <input type="text" aria-label="Last name" id="lastName" name="lastName" class="form-control" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupBirth">Age</label>
+                    <input type="date" class="form-control" id="signupBirth" name="signupBirth" required>
+                </div>
+
+                <hr>
+                <h5 class="h5">Contact Details</h5>
+                <br>
+
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupEmail">Email</label>
+                    <input type="email" class="form-control" id="singupEmail" name="signupEmail" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupPhone">Phone Number</label>
+                    <input type="text" class="form-control" id="signupPhone" name="signupPhone" pattern="[789][0-9]{9}" placeholder="+44 7777 777777" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupAddress">Address</label>
+                    <input type="text" class="form-control" id="signupAddress" name="signupAddress" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="zip_ode">Post Code</label>
+                    <input type="text" class="form-control" id="zip_code" name="zip_code" required>
+                </div>
+
+
+                <hr>
+                <h5 class="h5">Security</h5>
+                <br>
+
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupPassword">Password</label>
+                    <input type="password" class="form-control" id="signupPassword" name="signupPassword" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="signupPasswordConfirm">Confirm Password</label>
+                    <input type="password" class="form-control" id="signupPasswordConfirm" name="signupPasswordConfirm" required>
+
+
+                </div>
+
+
+                <button type="submit" class="btn btn-outline-primary">Register</button>
+            </form>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

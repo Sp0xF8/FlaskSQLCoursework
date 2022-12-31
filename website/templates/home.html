@@ -1,0 +1,143 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %}
+{% block content %}
+
+
+
+
+
+
+<style>
+    #carousel {
+        width: 80%;
+        margin: auto;
+        box-shadow: 0px 3px 3px #888888;
+    }
+
+    #cards {
+        width: 80%;
+        margin: auto;
+        margin-top: 10px;
+
+    }
+
+    #cards .card {
+        width: 30.67%;
+        margin-left: 2%;
+        float: left;
+        margin-bottom: 10px;
+        box-shadow: 0px 3px 3px #888888;
+    }
+
+    #card1 {
+        text-align: left;
+    }
+
+    #card2 {
+        text-align: center;
+    }
+
+    #card3 {
+        text-align: right;
+    }
+
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+
+    @media only screen and (max-width:600px) {
+        #cards .card {
+            width: 95%;
+            margin: auto;
+            margin-left: none;
+            float: none;
+        }
+
+        #card1,
+        #card2,
+        #card3 {
+            text-align: center;
+        }
+
+    }
+</style>
+
+    {% if not session.loggedin %}
+    
+    <div class="container-fluid regMain">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Please Register and Login</h4>
+                <p class="card-text">This will allow you to experiance the whole site, including bookings!</p>
+
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+
+
+
+    <!-- Carousel -->
+    <div id="carousel" class="carousel slide" data-bs-ride="carousel" style="margin-top: 10px;">
+
+        <!-- Indicators/dots -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#carousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <!-- The slideshow/carousel -->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="../static/Imgs/1.jpg" alt="Los Angeles" class="d-block" style="width:100%">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/Imgs/2.jpg" alt="Chicago" class="d-block" style="width:100%">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/Imgs/3.jpg" alt="New York" class="d-block" style="width:100%">
+            </div>
+        </div>
+
+        <!-- Left and right controls/icons -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <div id="cards">
+        <div class="card">
+            <div class="card-body TaR" id="card1">
+                <h4 class="card-title">Contact Us</h4>
+                <p class="card-text">Get in touch!</p>
+                <a href="/contact" class="btn btn-primary">See Details</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body TaC" id="card2">
+                <h4 class="card-title">FAQs</h4>
+                <p class="card-text">Frequently Asked questions</p>
+                <a href="/faq" class="btn btn-primary">Find Out</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body TaL" id="card3">
+                <h4 class="card-title">Privacy Policy</h4>
+                <p class="card-text">See how we handle data!</p>
+                <a href="/privacy" class="btn btn-primary">View Policy</a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

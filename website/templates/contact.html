@@ -1,0 +1,208 @@
+{% extends "base.html" %} {% block title %}Contact Us{% endblock %}
+{% block content %}
+
+
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+</style>
+
+
+<div class="container-fluid regMain">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Contact Us</h4>
+            <p class="card-text">If you have any enquiries, this is the place to be!</p>
+
+            <hr>
+
+            <div class="accordion" id="accordionContact">
+
+                <!-- Accordion Item One-->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Emergency Contact Information
+
+                        </button>
+                    </h2>
+
+                    <!-- Hidden Element-->
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                        data-bs-parent="#accordionContact">
+                        <div class="accordion-body">
+                            <a>
+                                <strong>Emergency Contact Information</strong>. To be clear, if you are in an
+                                emergency situation please call the local emergency services. For anything else,
+                                please contact us using the number below.
+
+                                <br>
+
+                                01392-123456
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-phone" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z" />
+                                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion Item Two-->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Contact Form
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionContact">
+                        <div class="accordion-body">
+
+                            <form>
+
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="contactSubject">Subject</label>
+                                    <select class="form-select" id="contactSubject" required="true" onchange="formExtension()">
+                                        <option selected>Choose...</option>
+                                        <option value="new">New Booking</option>
+                                        <option value="existing">Existing Booking</option>
+                                        <option value="ammend">Booking Ammendments</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div id="formExtenDiv">
+
+                                </div>
+
+                                <script type="text/javascript">
+                                    function formExtension(){
+                                        var formExtenDiv = document.getElementById("formExtenDiv");
+                                        var subject = document.getElementById("contactSubject").value;
+
+                                        if (subject == "new") {
+                                            formExtenDiv.innerHTML = `
+
+                                                <p> 
+                                                    <strong>Booking Details</strong>
+                                                    <hr>
+                                                    <br>
+                                                    If you are making a new booking, please follow the button to be redirected to our bookings page.
+                                                    <br>
+                                                    <a class="btn btn-primary maT-10" href="/bookings.html">Bookings</a>
+                                                </p>
+
+                                            `;
+
+                                            document.createElement(formExtenDiv);
+
+                                        } else if (subject == "existing") {
+                                            formExtenDiv.innerHTML = `
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactRef">Booking Reference</label>
+                                                    <input type="text" class="form-control" id="contactRef" required>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactMessage">Message</label>
+                                                    <textarea id="contactMessage" class="form-control" rows="6" required></textarea>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-success">Submit</button>
+
+                                            `;
+
+                                            document.createElement(formExtenDiv);
+
+                                        } else if (subject == "ammend") {
+                                            formExtenDiv.innerHTML = `
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactRef">Booking Reference</label>
+                                                    <input type="text" class="form-control" id="contactRef" placeholder="BK-101-112" required>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactAmmendAdults">Adults</label>
+                                                    <input type="number" class="form-control" id="contactAmmendAdults" placeholder="How many Adults?" value="1" required>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactAmmendChildren">Children</label>
+                                                    <input type="number" class="form-control" id="contactAmmendChildren" placeholder="How many Under 16s?" required>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactAmmendLuggage">Luggage</label>
+                                                    <select class="form-select" id="contactAmmendLuggage" required>
+                                                        <option selected>Choose...</option>
+                                                        <option value="1">1 x 15kg</option>
+                                                        <option value="2">1 x 25kg</option>
+                                                        <option value="3">2 x 25kg</option>
+                                                        <option value="4">3 x 25kg</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactMessage">Message</label>
+                                                    <textarea id="contactMessage" class="form-control" rows="6" placeholder="Please give a short description as to why you need an ammendment!" required></textarea>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-success">Submit</button>
+
+                                            `;
+
+                                            document.createElement(formExtenDiv);
+
+                                        } else if (subject == "other") {
+                                            formExtenDiv.innerHTML = `
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactEmail">Email</label>
+                                                    <input type="email" class="form-control" id="contactEmail" required>
+                                                </div>
+
+                                                <div class="input-group mb-3">
+                                                    <label class="input-group-text" for="contactMessage">Message</label>
+                                                    <textarea id="contactMessage" class="form-control" rows="6" placeholder="Please give a short description as to why you need an ammendment!" required></textarea>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-success">Submit</button>
+
+                                            `;
+
+                                            document.createElement(formExtenDiv);
+
+                                        } else {
+                                            formExtenDiv.innerHTML = ``;
+
+                                        } 
+
+
+                                    }
+
+
+                                </script>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
