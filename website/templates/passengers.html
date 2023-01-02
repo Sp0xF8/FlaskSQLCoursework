@@ -1,11 +1,105 @@
 {% extends "base.html" %} {% block title %}Passengers{% endblock %}
 {% block content %}
 
-    <div class="container-fluid bookMain">
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    .TaC{
+        text-align: center;
+    }
+</style>
+
+    <div class="container-fluid regMain">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Add Passengers to Your Account!</h4>
                 <p class="card-text">Book flights to your favourite destinations!</p>
+
+
+                <hr>
+
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="TaC">First Name</th>
+                            <th scope="col" class="TaC">Last Name</th>
+                            <th scope="col" class="TaC">Date of Birth</th>
+                            <th scope="col" class="TaC" style="width:12%;">Gender</th>
+                            <th scope="col" class="TaC">Passport Number</th>
+                            <th scope="col" class="TaC">Delete</th>
+
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            
+                            <form method="POST">
+                                <td>
+                                    <input type="text" name="first_name" placeholder="First Name" class="form-control TaC" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="last_name" placeholder="Last Name" class="form-control TaC" required>
+                                </td>
+                                <td>
+                                    <input type="date" name="date_of_birth" placeholder="Date of Birth" class="form-control TaC" required>
+                                </td>
+                                <td>
+                                    <select class="form-select TaC" name="gender" required="true">
+                                        <option selected>Choose...</option>
+                                        <option value="1">Male</option>
+                                        <option value="2">Female</option>
+                                        <option value="3">Not Specified</option>
+                                    </select>                               
+                                </td>
+                                <td>
+                                    <input type="text" name="passport_number" placeholder="Passport Number" class="form-control TaC" required>
+                                </td>
+                                <td style="text-align:center;">
+                                    <input type="hidden" name="user_id" value=" {{ session.userID }} ">
+                                    <input type="hidden" name="action" value="createPassenger">
+                                    <button type="submit" class="btn btn-outline-primary" stlye="">Create</button>
+                                </td>
+                            </form>
+
+
+
+                        </tr>
+                        
+                        
+                        {% for passenger in passengerList %}
+                        
+
+
+                        <tr>
+                            <td class="TaC">{{ passenger[2] }}</td>
+                            <td class="TaC">{{ passenger[3] }}</td>
+                            <td class="TaC">{{ passenger[4] }}</td>
+                            <td class="TaC">{{ passenger[5] }}</td>
+                            <td class="TaC">{{ passenger[6] }}</td>
+                            <td class="TaC">
+
+                                <form method="POST">
+                                    <input type="checkbox" name="ConfirmDelete" value="ConfirmDelete" class="styleInline" required>
+                                    <input type="hidden" name="action" value="deletePassenger" class="styleInline">
+                                    <input type="hidden" name="passengerID" value="{{ passenger[0] }}" class="styleInline">
+                                    <button type="submit" class="btn btn-danger styleInline" style="margin-left:10px">Delete</button>
+                                </form>
+
+                            </td>
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
 
             </div>
         </div>

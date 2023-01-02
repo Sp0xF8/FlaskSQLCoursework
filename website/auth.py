@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from datetime import date
 
 
-from .sqlHandeling import User, Flight
+from .sqlHandeling import User, Flight, Passenger, Ticket
 
 auth = Blueprint('auth', __name__)
 
@@ -101,12 +101,21 @@ def admin():
     return render_template("admin.html", userList=users, flightList=flights)
 
 
-@auth.route('/bookings')
+@auth.route('/bookings', methods=['GET', 'POST'])
 def bookings():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
-    return render_template("bookings.html")
+
+    passengers = Passenger.getPassengers_byUserID()
+
+    flights = Flight.getFlights()
+
+    flightDepartNames = Flight.getFlight_Distinct_Depart()
+
+    flightDestNames = Flight.getFlight_Distinct_Dest()
+
+    return render_template("bookings.html", passengerList=passengers, flightList=flights, flightDepartNames=flightDepartNames, flightDestNames=flightDestNames)
 
 
 @auth.route('/passengers', methods=['GET', 'POST'])
@@ -115,6 +124,27 @@ def passengers():
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
+    passengers = Passenger.getPassengers_byUserID()
+
+
+    if request.method == 'POST':
+        if (request.form.get('action') == 'deletePassenger'):
+            Passenger.deletePassenger(request.form.get('passengerID'))
+            flash('Passenger deleted!', category='success')
+            
+        elif (request.form.get('action') == 'createPassenger'):
+            Passenger.insertPassenger(
+                request.form.get('user_id'),
+                request.form.get('first_name'), 
+                request.form.get('last_name'), 
+                request.form.get('date_of_birth'), 
+                request.form.get('gender'),
+                request.form.get('passport_number')
+            )
+
+            flash('Passenger added!', category='success')
+        
+           
     
-    return render_template("passengers.html")
+    return render_template("passengers.html", passengerList=passengers)
 
