@@ -7,6 +7,19 @@
         margin: auto;
         margin-top: 20px;
     }
+
+
+    .styleInline{
+        display: inline-block;
+    }
+
+    .TaC{
+        text-align: center;
+    }
+
+    .ma{
+        margin: auto;
+    }
 </style>
 
 
@@ -33,6 +46,88 @@
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                         data-bs-parent="#adminPanel">
                         <div class="accordion-body">
+
+                            {% if session.userID == 1  %}
+
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col" class="TaC">Departure</th>
+                                        <th scope="col" class="TaC">Destination</th>
+                                        <th scope="col" class="TaC">Departing</th>
+                                        <th scope="col" class="TaC">Arriving</th>
+                                        <th scope="col" class="TaC" style="width:10%;">Price</th>
+                                        <th scope="col" class="TaC">Delete</th>
+
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        
+                                        <form method="POST">
+                                            <th scope="row">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-magic" viewBox="0 0 16 16">
+                                                    <path d="M9.5 2.672a.5.5 0 1 0 1 0V.843a.5.5 0 0 0-1 0v1.829Zm4.5.035A.5.5 0 0 0 13.293 2L12 3.293a.5.5 0 1 0 .707.707L14 2.707ZM7.293 4A.5.5 0 1 0 8 3.293L6.707 2A.5.5 0 0 0 6 2.707L7.293 4Zm-.621 2.5a.5.5 0 1 0 0-1H4.843a.5.5 0 1 0 0 1h1.829Zm8.485 0a.5.5 0 1 0 0-1h-1.829a.5.5 0 0 0 0 1h1.829ZM13.293 10A.5.5 0 1 0 14 9.293L12.707 8a.5.5 0 1 0-.707.707L13.293 10ZM9.5 11.157a.5.5 0 0 0 1 0V9.328a.5.5 0 0 0-1 0v1.829Zm1.854-5.097a.5.5 0 0 0 0-.706l-.708-.708a.5.5 0 0 0-.707 0L8.646 5.94a.5.5 0 0 0 0 .707l.708.708a.5.5 0 0 0 .707 0l1.293-1.293Zm-3 3a.5.5 0 0 0 0-.706l-.708-.708a.5.5 0 0 0-.707 0L.646 13.94a.5.5 0 0 0 0 .707l.708.708a.5.5 0 0 0 .707 0L8.354 9.06Z"/>
+                                                </svg>
+                                            </th>
+                                            <td>
+                                                <input type="text" name="departure" placeholder="Departure" class="form-control TaC" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="destination" placeholder="Destination" class="form-control TaC" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="departing" placeholder="Departing (HH:MM)" class="form-control TaC" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="arriving" placeholder="Arriving (HH:MM)" class="form-control TaC" required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="price" placeholder="Price" class="form-control TaC" required>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <input type="hidden" name="action" value="createFlight">
+                                                <button type="submit" class="btn btn-outline-primary" stlye="">Create</button>
+                                            </td>
+                                        </form>
+
+
+
+                                    </tr>
+                                    
+                                    
+                                    {% for flight in flightList %}
+                                    
+
+
+                                    <tr>
+                                        <th scope="row" >{{ flight[0] }}</th>
+                                        <td class="TaC">{{ flight[1] }}</td>
+                                        <td class="TaC">{{ flight[2] }}</td>
+                                        <td class="TaC">{{ flight[3] }}</td>
+                                        <td class="TaC">{{ flight[4] }}</td>
+                                        <td class="TaC">{{ flight[5] }}</td>
+                                        <td class="TaC">
+
+                                            <form method="POST">
+                                                <input type="checkbox" name="ConfirmDelete" value="ConfirmDelete" class="styleInline" required>
+                                                <input type="hidden" name="action" value="deleteFlight" class="styleInline">
+                                                <input type="hidden" name="flightID" value="{{ flight[0] }}" class="styleInline">
+                                                <button type="submit" class="btn btn-danger styleInline" style="margin-left:10px">Delete</button>
+                                            </form>
+
+                                        </td>
+
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            {% endif %}
                             
                         </div>
                     </div>
@@ -50,7 +145,7 @@
                         data-bs-parent="#adminPanel">
                         <div class="accordion-body">
 
-                            {% if session.userID == 8  %}
+                            {% if session.userID == 1  %}
 
                             <table class="table table-striped">
                                 <thead>

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from datetime import date
 
 
-from .sqlHandeling import userLogin, insertUser, getUserRecord_byEmail, dropUserRecord_byID, loginHelperEmail, stopSession, getAllUsers, dropUserRecord_byID, isAdmin, isLoggedin
+from .sqlHandeling import User, Flight
 
 auth = Blueprint('auth', __name__)
 
@@ -14,7 +14,7 @@ def login():
         email = request.form.get('floatingEmail')
         password = request.form.get('floatingPassword')
 
-        if userLogin(email, password):
+        if User.userLogin(email, password):
             return redirect(url_for('views.home'))
 
     return render_template("login.html")
@@ -22,11 +22,11 @@ def login():
 
 @auth.route('/logout')
 def logout():
-    if(not isLoggedin()):
+    if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
-    stopSession()
+    User.stopSession()
     return redirect(url_for('auth.login'))
 
 
@@ -61,11 +61,11 @@ def sign_up():
             flash('Passwords do not match.', category='error')
         else:
 
-            insertUser(firstName, lastName, email, password, DoB, phone, address, zip_code)
+            User.insertUser(firstName, lastName, email, password, DoB, phone, address, zip_code)
 
 
 
-            userLogin(email, password)
+            User.userLogin(email, password)
             flash('Account created!', category='success')
             # Add user to database
 
@@ -77,24 +77,44 @@ def sign_up():
 @auth.route('/admin', methods=['GET', 'POST'])
 def admin():
 
-    if(not isAdmin()):
+    if(not User.isAdmin()):
         flash('You require greater permissions to access this page!', category='error')
         return redirect(url_for('views.restricted'))
 
     if request.method == 'POST':
         if (request.form.get('action') == 'deleteUser'):
-            dropUserRecord_byID(request.form.get('userID'))
+            User.dropUserRecord_byID(request.form.get('userID'))
             flash('User deleted!', category='success')
 
-    users = getAllUsers()
+        elif (request.form.get('action') == 'deleteFlight'):
+            Flight.deleteFlight(request.form.get('flightID'))
+            flash('Flight deleted!', category='success')
 
-    return render_template("admin.html", userList=users)
+        elif (request.form.get('action') == 'createFlight'):
+            Flight.insertFlight(request.form.get('departure'), request.form.get('destination'), request.form.get('departing'), request.form.get('arriving'), request.form.get('price'))
+            flash('Flight added!', category='success')
+
+    users = User.getAllUsers()
+
+    flights = Flight.getFlights()
+
+    return render_template("admin.html", userList=users, flightList=flights)
 
 
 @auth.route('/bookings')
 def bookings():
-    if(not isLoggedin()):
+    if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
     return render_template("bookings.html")
+
+
+@auth.route('/passengers', methods=['GET', 'POST'])
+def passengers():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    
+    return render_template("passengers.html")
 
