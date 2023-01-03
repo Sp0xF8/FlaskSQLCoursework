@@ -5,7 +5,6 @@ from flask import flash, session
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask_login import login_user
 
 db = sql.connect(
     host = "localhost",

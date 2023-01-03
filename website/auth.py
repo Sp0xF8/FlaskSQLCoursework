@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from datetime import date
 
 
@@ -107,15 +107,75 @@ def bookings():
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
-    passengers = Passenger.getPassengers_byUserID()
+    action = request.form.get('action')
 
-    flights = Flight.getFlights()
+    destination = request.form.get('destination')
+    departure = request.form.get('departure')
 
-    flightDepartNames = Flight.getFlight_Distinct_Depart()
+    if request.method == 'POST':
+        if (action == 'searchFlights'):
+            if (destination and departure):
+                flights = Flight.getFlightFromTo(departure, destination)
 
-    flightDestNames = Flight.getFlight_Distinct_Dest()
+                if (flights):
+                    
+                    flash('Flights found!', category='success')
+                    return render_template(
+                        "bookings.html", 
+                        passengerList=Passenger.getPassengers_byUserID(), 
+                        flightList=Flight.getFlights(), 
+                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+                        flightDestNames=Flight.getFlight_Distinct_Dest(),
+                        departANDdest=flights
+                        )
 
-    return render_template("bookings.html", passengerList=passengers, flightList=flights, flightDepartNames=flightDepartNames, flightDestNames=flightDestNames)
+                else:
+                    flash('No flights found!', category='error')
+
+                    
+            elif (destination and not departure):
+                flights = Flight.getFlightTo(destination)
+
+                if(flights):
+                    flash('Flights found!', category='success')
+                    return render_template(
+                        "bookings.html", 
+                        passengerList=Passenger.getPassengers_byUserID(), 
+                        flightList=Flight.getFlights(), 
+                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+                        flightDestNames=Flight.getFlight_Distinct_Dest(),
+                        departANDdest=flights
+                        )
+                else:
+                    flash(' No flights found!', category='error')
+
+            elif(departure and not destination):
+                flights = Flight.getFlightFrom(departure)
+                if(flights):
+                    flash('Flights found!', category='success')
+                    return render_template(
+                        "bookings.html", 
+                        passengerList=Passenger.getPassengers_byUserID(), 
+                        flightList=Flight.getFlights(), 
+                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+                        flightDestNames=Flight.getFlight_Distinct_Dest(),
+                        departANDdest=flights
+                        )
+                else:
+                    flash('No flights found!', category='error')
+
+            else:
+                flash('Please select a destination and/or departure!', category='error')
+
+    
+
+    return render_template(
+        "bookings.html", 
+        passengerList=Passenger.getPassengers_byUserID(), 
+        flightList=Flight.getFlights(), 
+        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+        flightDestNames=Flight.getFlight_Distinct_Dest()
+        )
 
 
 @auth.route('/passengers', methods=['GET', 'POST'])
@@ -147,4 +207,28 @@ def passengers():
            
     
     return render_template("passengers.html", passengerList=passengers)
+
+@auth.route('/process', methods=['POST'])
+def process():
+    departure = None
+    destination = None
+
+    departure = request.form.get('departure')
+    destination = request.form.get('destination')
+
+    if ((destination == None) and (departure == None)):
+        flash('Please select a Departure or Destination.', category='error')
+
+    elif (destination == None):
+        jsonify({'departure': departure})
+
+    elif (departure == None):
+        jsonify({'destination': destination})
+
+    else:
+        jsonify({'departure': departure},
+                {'destination': destination})
+
+        
+
 
