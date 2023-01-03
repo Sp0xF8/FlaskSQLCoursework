@@ -166,7 +166,20 @@ def bookings():
 
             else:
                 flash('Please select a destination and/or departure!', category='error')
-
+        elif (action == 'selectFlight'):
+            flightID = request.form.get('flightID')
+            if (flightID):
+                
+                return render_template(
+                        "bookings.html", 
+                        passengerList=Passenger.getPassenger_User_FirstName(), 
+                        flightList=Flight.getFlights(), 
+                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+                        flightDestNames=Flight.getFlight_Distinct_Dest(),
+                        selectedFlight=Flight.getFlight(flightID)
+                        )
+                
+                
     
 
     return render_template(

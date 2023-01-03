@@ -105,6 +105,12 @@ class Passenger:
         cursor.execute("DELETE FROM Passengers WHERE id = %s", (id,))
         db.commit()
         print(cursor.rowcount, " Passenger record deleted.")
+
+    def getPassenger_User_FirstName():
+        id = session.get('userID')
+        cursor.execute("SELECT id, first_name FROM Passengers WHERE user_id = %s", (id,))
+        result = cursor.fetchone()
+        return result
     
 
 
