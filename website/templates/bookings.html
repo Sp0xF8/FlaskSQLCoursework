@@ -7,6 +7,14 @@
         margin: auto;
         margin-top: 20px;
     }
+    
+
+    .centered-element {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 148px;
+      }
 
     @media (max-width: 768px) {
         .regMain {
@@ -20,54 +28,6 @@
         <div class="card-body">
             <h4 class="card-title">Book Flights!</h4>
             <p class="card-text">Book flights to your favourite destinations!</p>
-
-            <!--
-                    <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputDepartureDest">Depatrure</label>
-                    <select class="form-select" id="inputDepartureDest" required="true">
-                        <option selected>Choose...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputArrivalDest">Arrival</label>
-                    <select class="form-select" id="inputArrivalDest" required="true">
-                        <option selected>Choose...</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputDepartureDate">Departure Date</label>
-                    <input type="date" class="form-control" id="inputDepartureDate" required="true">
-                </div>
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputReturnDate">Return Date</label>
-                    <input type="date" class="form-control" id="inputReturnDate">
-
-                </div>
-
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputAdults">Adults</label>
-                    <input type="number" class="form-control" id="inputAdults" required="true">
-                </div>
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputChildren">Children</label>
-                    <input type="number" class="form-control" id="inputChildren">
-                </div>
-
-                <button type="submit" class="btn btn-primary FR">Search</button>
-
-
-                -->
 
             <form method="POST">
                 <form method="POST">
@@ -189,7 +149,7 @@
                         <hr style="width:70%; margin:auto;">
                         <br>
                         <br>
-
+                        <!-- F L I G H T  S E L E C T E D -->
                         <h1 style="text-align:left;">
                             {{selectedFlight[1]}} 
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
@@ -198,7 +158,69 @@
                             {{selectedFlight[2]}}
                         </h1>
 
-                        
+                        <hr style="width:80%; margin:auto;">
+                        <br>
+
+                        <!-- F L I G H T  D E T A I L S -->
+
+                        <div class="card" style="width:30%;float:left;">
+                            <p class="card-text" style="margin:0; padding:0;">Takeoff</p>
+                            <p class="card-text" style="margin:0; padding:0;">{{selectedFlight[3]}}</p>
+                            <hr style="width:70%; margin:auto;">
+                            <p class="card-text" style="margin:0; padding:0;">Landing</p>
+                            <p class="card-text" style="margin:0; padding:0;">{{selectedFlight[4]}}</p>
+                            <hr style="width:70%; margin:auto;">
+                            <p class="card-text" style="margin:0; padding:0;">Price</p>
+                            <p class="card-text" style="margin:0; padding:0;">£{{selectedFlight[5]}}</p>
+                        </div>
+
+                        <!-- B O O K I N G  D E T A I L S -->
+
+                        <div class="card centered-element" style="margin-left:none">
+                            <h2>Flight Information</h2>
+                            <div class="card" style="width:80%;">
+                                
+                                <div class="input-group">
+                                    <span class="input-group-text">Departure</span>
+                                    <input type="date" name="date" class="form-control">
+                                </div>  
+
+                                <!-- S I N G L E  P A S S E N G E R -->
+                                {% if passengerListLen == 2 %}
+                                    <div class="input-group">
+                                        <br>
+                                        <span class="input-group-text">Whos Going?</span>
+                                        <select class="form-select" name="departure">
+                                            <option></option>
+                                            <option value="{{passengerList[0]}}">{{passengerList[1]}}</option>
+                                        </select>
+                                    </div>
+
+                                <!-- N O  P A S S E N G E R S -->
+                                {% elif passengerListLen == 0 %}
+                                    <h1>No passengers found</h1>
+                                    <p>Add some on the <a href="/passengers">Passengers page</a></p>
+                                
+                                <!-- M U L T I P L E  P A S S E N G E R S -->
+                                {% else %}
+                                    
+    
+                                    <div class="input-group">
+                                        <br>
+                                        <span class="input-group-text">Whos Going?</span>
+                                        <select class="form-select" name="departure" multiple>
+                                            <option></option>
+                                            {% for passenger in passengerList %}
+                                            <option value="{{passenger[0]}}">{{passenger[1]}}</option>
+    
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                        
+    
+                                {% endif %}
+                            </div>
+                        </div>
 
                         {% endif %}
 

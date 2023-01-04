@@ -170,9 +170,11 @@ def bookings():
             flightID = request.form.get('flightID')
             if (flightID):
                 
+                
                 return render_template(
                         "bookings.html", 
-                        passengerList=Passenger.getPassenger_User_FirstName(), 
+                        passengerList=Passenger.getPassenger_User_FirstName(),
+                        passengerListLen = len(Passenger.getPassenger_User_FirstName()), 
                         flightList=Flight.getFlights(), 
                         flightDepartNames=Flight.getFlight_Distinct_Depart(), 
                         flightDestNames=Flight.getFlight_Distinct_Dest(),
