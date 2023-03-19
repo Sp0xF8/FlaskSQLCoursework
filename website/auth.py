@@ -52,9 +52,13 @@ def sign_up():
             flash('Last name must be greater than 3 characters.', category='error')
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
+        elif User.emailExists(email):
+            flash('Email already exists.', category='error')
         elif len(phone) < 10:
             flash('Phone number must be greater than 10 characters.',
                   category='error')
+        elif User.phoneExists(phone):
+            flash('Phone number already exists.', category='error')
         elif len(password) < 7:
             flash('Password must be greater than 7 characters.', category='error')
         elif password != passwordConfirm:
@@ -166,23 +170,17 @@ def bookings():
 
             else:
                 flash('Please select a destination and/or departure!', category='error')
-        elif (action == 'selectFlight'):
-            flightID = request.form.get('flightID')
-            if (flightID):
-                
-                
-                return render_template(
-                        "bookings.html", 
-                        passengerList=Passenger.getPassenger_User_FirstName(),
-                        passengerListLen = len(Passenger.getPassenger_User_FirstName()), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        selectedFlight=Flight.getFlight(flightID)
-                        )
-                
-                
-    
+        
+        if (action == 'selectFlight'):
+
+
+            return render_template(
+                "bookings.html", 
+                passengerList=Passenger.getPassengers_byUserID(), 
+                flightList=Flight.getFlights(), 
+                flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+                flightDestNames=Flight.getFlight_Distinct_Dest()
+                )
 
     return render_template(
         "bookings.html", 

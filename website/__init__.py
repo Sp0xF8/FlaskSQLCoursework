@@ -7,7 +7,7 @@ from flask_login import LoginManager
 def create_app():
     
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'pewpewpew'
+    app.config['SECRET_KEY'] = 'pewpewpew' #Change this before ever deploying if i need to
 
     from .views import views
     from .auth import auth

@@ -110,6 +110,7 @@ class Passenger:
         id = session.get('userID')
         cursor.execute("SELECT id, first_name FROM Passengers WHERE user_id = %s", (id,))
         result = cursor.fetchone()
+        print(result)
         return result
     
 
@@ -287,9 +288,25 @@ class User:
         else:
             return False
 
+    def emailExists():
+        cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        if user:
+            return True
+        else:
+            return False
+    
+    def phoneExists():
+        cursor.execute("SELECT * FROM Users WHERE phone = %s", (phone,))
+        user = cursor.fetchone()
+        if user:
+            return True
+        else:
+            return False
 
-    cursor.execute("SELECT * FROM Users")
+
+    #cursor.execute("SELECT * FROM Users")
     #cursor.execute("DESCRIBE Users")
 
-    for x in cursor:
-        print(x)
+    #for x in cursor:
+    #    print(x)
