@@ -104,9 +104,24 @@ def admin():
 
     return render_template("admin.html", userList=users, flightList=flights)
 
-
-@auth.route('/bookings', methods=['GET', 'POST'])
+@auth.route('/booking', methods=['GET', 'POST'])
 def bookings():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        if (request.form.get('action') == 'deleteTicket'):
+            Ticket.deleteTicket(request.form.get('ticketID'))
+            flash('Ticket deleted!', category='success')
+
+    tickets = Ticket.getTickets_byUserID()
+
+    return render_template("booking.html", ticketList=tickets)
+
+
+@auth.route('/flight-search', methods=['GET', 'POST'])
+def flightSearch():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
@@ -125,7 +140,7 @@ def bookings():
                     
                     flash('Flights found!', category='success')
                     return render_template(
-                        "bookings.html", 
+                        "flight-search.html", 
                         passengerList=Passenger.getPassengers_byUserID(), 
                         flightList=Flight.getFlights(), 
                         flightDepartNames=Flight.getFlight_Distinct_Depart(), 
@@ -143,7 +158,7 @@ def bookings():
                 if(flights):
                     flash('Flights found!', category='success')
                     return render_template(
-                        "bookings.html", 
+                        "flight-search.html", 
                         passengerList=Passenger.getPassengers_byUserID(), 
                         flightList=Flight.getFlights(), 
                         flightDepartNames=Flight.getFlight_Distinct_Depart(), 
@@ -158,7 +173,7 @@ def bookings():
                 if(flights):
                     flash('Flights found!', category='success')
                     return render_template(
-                        "bookings.html", 
+                        "flight-search.html", 
                         passengerList=Passenger.getPassengers_byUserID(), 
                         flightList=Flight.getFlights(), 
                         flightDepartNames=Flight.getFlight_Distinct_Depart(), 
@@ -173,17 +188,23 @@ def bookings():
         
         if (action == 'selectFlight'):
 
+            UserID = request.form.get('userID')
+            flightID = request.form.get('flightID')
+
+            flightInfo = Flight.getFlight(flightID)
+            passengerList=Passenger.getPassengers_byUserID()
+            pListLen = len(passengerList)
+
 
             return render_template(
-                "bookings.html", 
-                passengerList=Passenger.getPassengers_byUserID(), 
-                flightList=Flight.getFlights(), 
-                flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                flightDestNames=Flight.getFlight_Distinct_Dest()
+                "booking.html", 
+                flightInfo=flightInfo,
+                passengerList=passengerList,
+                pListLen=pListLen
                 )
 
     return render_template(
-        "bookings.html", 
+        "flight-search.html", 
         passengerList=Passenger.getPassengers_byUserID(), 
         flightList=Flight.getFlights(), 
         flightDepartNames=Flight.getFlight_Distinct_Depart(), 

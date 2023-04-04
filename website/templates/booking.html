@@ -1,0 +1,108 @@
+{% extends "base.html" %} {% block title %}Bookings{% endblock %}
+{% block content %}
+
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+
+    .centered-element {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 148px;
+    }
+
+    @media (max-width: 768px) {
+        .regMain {
+            width: 95%;
+        }
+    }
+</style>
+
+<div class="container-fluid regMain">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">Book Flights!</h4>
+                <p class="card-text">Book flights to your favourite destinations!</p>
+
+                <form method="POST">
+
+                    <hr>
+                    <br>
+
+                    <h2 style="text-align: center;">{{flightInfo[1]}} - > {{flightInfo[2]}}</h5>
+
+
+                        {% for passenger in passengerList %}
+
+                        <div class="card" style="width:45%; display:inline-flex; margin-left:2.5%">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h3 style="text-align:center;">{{passenger[2]}}</h3>
+                                    <div class="input-group mb-3 w-50"
+                                        style="border-radius:3px;background-color: #FA7E61; margin:auto;">
+                                        <input class="form-check-input" type="checkbox" value="{{passenger[6]}}"
+                                            id="select{{passenger[0]}}" style="margin-left:15%">
+                                        <label class="form-check-label" for="select{{passenger[0]}}"
+                                            style="padding-left:5px"> Are they going?</label>
+                                    </div>
+
+                                    <div class="input-group mb-3 w-75" style="margin:auto;">
+                                        <label class="input-group-text" for="lug{{passenger[0]}}">Luggage</label>
+                                        <select class="form-select" name="lug{{passenger[0]}}" id="lug{{passenger[0]}}">
+                                            <option></option>
+                                            <option value="lug{{passenger[0]}}x15">15kg</option>
+                                            <option value="lug{{passenger[0]}}x20">20kg</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group mb-3 w-75" style="margin:auto;">
+                                        <button class="btn btn-secondary">Specify Ticket</button>
+
+
+
+
+
+                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Login</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+
+
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Back</button>
+                                                        <button type="submit" class="btn btn-primary">Login</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                </form>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{% endfor %}
+
+
+</form>
+
+
+
+
+{% endblock %}
