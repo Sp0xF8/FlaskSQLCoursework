@@ -149,7 +149,25 @@ class Flight:
         ## Returns an array of flights with the given departure and destination
     def getFlightFromTo(departure, destination):
         cursor.execute("SELECT * FROM Flights WHERE departure = %s AND destination = %s", (departure, destination))
-        result = cursor.fetchall()
+        mid = cursor.fetchall()
+        result = {}
+        print(mid)
+        # if mid == None:
+        #     return None
+        # elif len(mid) == 0:
+        print("preappend")
+       
+        
+        departure = str(mid[0][1])
+        destination = str(mid[0][2])
+        print(departure)
+        print(destination)
+        result.update({"departure": departure})
+        print("midappend")
+        result.update({"destination": destination})
+
+        print("postappend")
+        print(result)
         return result
 
 

@@ -120,94 +120,24 @@ def bookings():
     return render_template("booking.html", ticketList=tickets)
 
 
-@auth.route('/flight-search', methods=['GET', 'POST'])
-def flightSearch():
+@auth.route('/search', methods=['GET', 'POST'])
+def search():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
-    action = request.form.get('action')
-
-    destination = request.form.get('destination')
-    departure = request.form.get('departure')
-
-    if request.method == 'POST':
-        if (action == 'searchFlights'):
-            if (destination and departure):
-                flights = Flight.getFlightFromTo(departure, destination)
-
-                if (flights):
-                    
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "flight-search.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-
-                else:
-                    flash('No flights found!', category='error')
-
-                    
-            elif (destination and not departure):
-                flights = Flight.getFlightTo(destination)
-
-                if(flights):
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "flight-search.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-                else:
-                    flash(' No flights found!', category='error')
-
-            elif(departure and not destination):
-                flights = Flight.getFlightFrom(departure)
-                if(flights):
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "flight-search.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-                else:
-                    flash('No flights found!', category='error')
-
-            else:
-                flash('Please select a destination and/or departure!', category='error')
-        
-        if (action == 'selectFlight'):
-
-            UserID = request.form.get('userID')
-            flightID = request.form.get('flightID')
-
-            flightInfo = Flight.getFlight(flightID)
-            passengerList=Passenger.getPassengers_byUserID()
-            pListLen = len(passengerList)
-
-
-            return render_template(
-                "booking.html", 
-                flightInfo=flightInfo,
-                passengerList=passengerList,
-                pListLen=pListLen
-                )
-
+    if request.is_json:
+        print("iteration1")
+        if request.method == 'GET':
+            departure = request.args.get('departure')
+            destination = request.args.get('destination')
+            print(f"__{departure}__")
+            print(f"__{destination}__")
+            return jsonify(Flight.getFlightFromTo(departure, destination))
+        print("iteration2")
     return render_template(
-        "flight-search.html", 
-        passengerList=Passenger.getPassengers_byUserID(), 
-        flightList=Flight.getFlights(), 
-        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+        "search.html"ç, 
+        flightDepartNames=Flight.getFlight_Distinct_Depart(),
         flightDestNames=Flight.getFlight_Distinct_Dest()
         )
 
