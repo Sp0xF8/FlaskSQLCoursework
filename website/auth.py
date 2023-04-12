@@ -3,6 +3,7 @@ from datetime import date
 
 
 from .sqlHandeling import User, Flight, Passenger, Ticket
+from .ajax import Ajax
 
 auth = Blueprint('auth', __name__)
 
@@ -13,6 +14,7 @@ def login():
     if request.method == 'POST':
         email = request.form.get('floatingEmail')
         password = request.form.get('floatingPassword')
+        print(email, password)
 
         if User.userLogin(email, password):
             return redirect(url_for('views.home'))
@@ -105,19 +107,17 @@ def admin():
     return render_template("admin.html", userList=users, flightList=flights)
 
 @auth.route('/booking', methods=['GET', 'POST'])
-def bookings():
+def booking():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
-    if request.method == 'POST':
-        if (request.form.get('action') == 'deleteTicket'):
-            Ticket.deleteTicket(request.form.get('ticketID'))
-            flash('Ticket deleted!', category='success')
+    print("in booking")
+    
+    
 
-    tickets = Ticket.getTickets_byUserID()
-
-    return render_template("booking.html", ticketList=tickets)
+    print("in booking finish")
+    return render_template("booking.html")
 
 
 @auth.route('/search', methods=['GET', 'POST'])
@@ -127,16 +127,21 @@ def search():
         return redirect(url_for('auth.login'))
 
     if request.is_json:
-        print("iteration1")
+
         if request.method == 'GET':
             departure = request.args.get('departure')
             destination = request.args.get('destination')
-            print(f"__{departure}__")
-            print(f"__{destination}__")
-            return jsonify(Flight.getFlightFromTo(departure, destination))
-        print("iteration2")
+            return jsonify(Ajax.Flight.search(departure, destination))
+        
+
+    if (request.form.get('action') == 'selectFlight'):
+        flight = Flight.getFlight(id=request.form.get('flightID'))
+        passengers = Passenger.getPassengers_byUserID()
+        return render_template("booking.html", flight=flight, passengers=passengers)
+
+
     return render_template(
-        "search.html"ç, 
+        "search.html", 
         flightDepartNames=Flight.getFlight_Distinct_Depart(),
         flightDestNames=Flight.getFlight_Distinct_Dest()
         )

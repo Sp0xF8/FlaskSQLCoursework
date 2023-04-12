@@ -16,9 +16,30 @@
         min-height: 148px;
     }
 
+    .flightCard {
+        width:45%; 
+        margin:auto;
+        display:inline-block;
+    }
+
+    .bodyFlightCard {
+        padding: auto;
+    }
+
     @media (max-width: 768px) {
         .regMain {
             width: 95%;
+        }
+
+        .flightCard {
+            width: 100%;
+        }
+
+        .bodyFlightCard {
+            height: 100%;
+            padding: 0px;
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
     }
 </style>
@@ -60,7 +81,7 @@
                         </select>
                     </div>
 
-                    <button class="btn btn-primary w-100" onclick() id="searchFlights" type="button">Search</button>
+                    <button class="btn btn-primary w-100 mb-3" onclick() id="searchFlights" type="button">Search</button>
 
                 </form>
 
