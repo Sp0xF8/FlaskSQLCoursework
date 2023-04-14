@@ -106,6 +106,17 @@ def admin():
 
     return render_template("admin.html", userList=users, flightList=flights)
 
+@auth.route('/passengerDetails', methods=['GET'])
+def passengerDetails():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+    
+    if request.is_json:
+        if request.method == 'GET':
+            passenger = Passenger.getPassengerByUIDandPID(passengerID=request.args.get('passengerID'))
+            return jsonify(passenger)
+
 @auth.route('/booking', methods=['GET', 'POST'])
 def booking():
     if(not User.isLoggedin()):
@@ -113,11 +124,16 @@ def booking():
         return redirect(url_for('auth.login'))
 
     print("in booking")
+
+    flight = Flight.getFlight(id=request.args.get('flightID'))
+    flight_date = request.args.get('flight_date')
+    passengers = Passenger.getPassengers_byUserID()
+
     
     
 
     print("in booking finish")
-    return render_template("booking.html")
+    return render_template("booking.html", flight=flight, flight_date=flight_date, passengers=passengers)
 
 
 @auth.route('/search', methods=['GET', 'POST'])

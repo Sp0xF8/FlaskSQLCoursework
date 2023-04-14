@@ -123,6 +123,12 @@ class Passenger:
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s", (userID,))
         
         return cursor.fetchall()
+
+    def getPassengerByUIDandPID(passengerID):
+        userID = session.get('userID')
+        cursor.execute("SELECT * FROM Passengers WHERE user_id = %s AND id = %s", (userID, passengerID))
+        
+        return cursor.fetchone()
     
     def deletePassenger(id):
         cursor.execute("DELETE FROM Passengers WHERE id = %s", (id,))

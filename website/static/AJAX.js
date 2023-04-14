@@ -72,18 +72,22 @@ $(document).ready(function() {
     });
 
 
-    $("#checkSeats").click(function() {
+    //Create function to get the passengers detials given an ID
+    function getPassengerDetails(id) {
         $.ajax({
-            url: '/booking',
+            url: '/passengerDetails',
             type: 'get',
             contentType: 'application/json',
             data: {
-                departure: $('#departure').val(),
-                destination: $('#destination').val(),
+                departure: id,
             },
             success: function(response) {
+
+
+                return response;
+
             }
         })
+    }
 
-    });
 })
