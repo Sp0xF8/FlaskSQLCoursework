@@ -34,7 +34,7 @@
         }
 
         #editOption {
-            display:none;
+            display: none;
         }
     }
 </style>
@@ -43,84 +43,89 @@
     <div class="card shadows">
         <div class="card-body">
             <h1 class="card-title">Book Flights!</h4>
-            <p class="card-text">Book flights to your favourite destinations!</p>
+                <p class="card-text">Book flights to your favourite destinations!</p>
 
-            <!-- F L I G H T  D E T A I L S -->
+                <!-- F L I G H T  D E T A I L S -->
 
-            <div id="editable1">
+                <div id="editable1">
 
-            </div>
+                </div>
 
-            
 
-            <div class="card text-center mb-3 shadows">
-                <div class="card-header">
-                    <h2 id="flight_date">{{flight_date}}</h2>
-                    <h2 class="card-title">
-                        {{flight[0][1]}} 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+
+                <div class="card text-center mb-3 shadows">
+                    <div class="card-header">
+                        <h2 id="flight_date">{{flight_date}}</h2>
+                        <h2 class="card-title">
+                            {{flight[0][1]}}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z" />
                             </svg>
-                        {{flight[0][2]}}
-                    </h2>
-                </div>
-                <p hidden="true" id="flight_id">{{flight[0][0]}}</p>
+                            {{flight[0][2]}}
+                        </h2>
+                    </div>
+                    <p hidden="true" id="flight_id">{{flight[0][0]}}</p>
 
-                <div class="card-body">
-                    <div class="card shadows" style="width: 46%; display:inline-block;">
-                        <div class="card-body">
-                            <p class="card-text" style="margin:0; padding:0;">Takeoff</p>
-                            <p class="card-text" style="margin:0; padding:0;">{{flight[0][3]}}</p>
-                            <hr style="width:70%; margin:auto;">
-                            <p class="card-text" style="margin:0; padding:0;">Landing</p>
-                            <p class="card-text" style="margin:0; padding:0;">{{flight[0][4]}}</p>
+                    <div class="card-body">
+                        <div class="card shadows" style="width: 46%; display:inline-block;">
+                            <div class="card-body">
+                                <p class="card-text" style="margin:0; padding:0;">Takeoff</p>
+                                <p class="card-text" style="margin:0; padding:0;">{{flight[0][3]}}</p>
+                                <hr style="width:70%; margin:auto;">
+                                <p class="card-text" style="margin:0; padding:0;">Landing</p>
+                                <p class="card-text" style="margin:0; padding:0;">{{flight[0][4]}}</p>
+                            </div>
+                        </div>
+                        <div class="card shadows" style="width: 46%;display:inline-block;">
+                            <div class="card-body">
+                                <p class="card-text" style="margin:0; padding:0;">Price</p>
+                                <p class="card-text" style="margin:0; padding:0;">£{{flight[0][5]}}</p>
+                                <hr style="width:70%; margin:auto;">
+                                <p class="card-text" style="margin:0; padding:0;">Seats Lefts</p>
+                                <p class="card-text" style="margin:0; padding:0;" id="seat_left">{{flight[0][6]}}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="card shadows" style="width: 46%;display:inline-block;">
-                        <div class="card-body">
-                            <p class="card-text" style="margin:0; padding:0;">Price</p>
-                            <p class="card-text" style="margin:0; padding:0;">£{{flight[0][5]}}</p>
-                            <hr style="width:70%; margin:auto;">
-                            <p class="card-text" style="margin:0; padding:0;">Seats Lefts</p>
-                            <p class="card-text" style="margin:0; padding:0;" id="seat_left">{{flight[0][6]}}</p>
-                        </div>
+
+                </div>
+
+
+
+                <!-- B O O K I N G  D E T A I L S -->
+
+                <div class="card mb-3 shadows">
+                    <div class="card-header">
+                        <h2 class="card-title" style="text-align:center;">Booking Details</h2>
                     </div>
+                    <div class="card-body">
+                        <form>
+                            <h3 class="w-100" id="editOption" style="text-align: center;">Choose whos going</h3>
+                            <p id="selectedshit"></p>
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="selectPassenger">Who's going?</label>
+                                <select class="form-select" id="selectPassenger" onchange="PassengerList()" required
+                                    multiple>
+
+
+                                    {% for passenger in passengers %}
+
+                                    <option value="{{ passenger[0] }}">{{ passenger[2] }}</option>
+
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+                            <button class="btn btn-success mb-3 w-75" type="button" onclick="" id="confirm_passengers" style="text-align:center;">Confirm Passengers</button>
+
+                            <div class="input-group mb-3 w-100" id="passengerInfo">
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
-
-            </div>
-
-        
-
-            <!-- B O O K I N G  D E T A I L S -->
-
-            <div class="card mb-3 shadows">
-                <div class="card-header">
-                    <h2 class="card-title" style="text-align:center;">Booking Details</h2>
-                </div>
-                <div class="card-body">
-                    <form>
-                        <h3 class="w-100" id="editOption" style="text-align: center;">Choose whos going</h3>
-                        <p id="selectedshit"></p>
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="selectPassenger">Who's going?</label>
-                            <select class="form-select" id="selectPassenger" onchange="PassengerList()" required multiple>
-
-                                
-                                {% for passenger in passengers %}
-    
-                                <option value="{{ passenger[0] }}">{{ passenger[2] }}</option>
-    
-                                {% endfor %}
-    
-                            </select>
-                        </div>
-
-                        <div class="input-group mb-3 w-100" id="passengerInfo">
-                        </div>
-                    </form>
-                </div>
-
-            </div>
 
         </div>
     </div>
@@ -128,57 +133,90 @@
 
     <script>
 
-        if (navigator.platform == ("MacIntel")){
+        if (navigator.platform == ("MacIntel")) {
             document.getElementById("editOption").innerHTML = "Hold CMD (⌘) to select multiple";
         } else {
             document.getElementById("editOption").innerHTML = "Hold CTRL to select multiple";
         }
 
+        var selectedPassengers = [];
+
 
         function PassengerList() {
             var passengerList = document.getElementById("selectPassenger");
-            var selectedPassengers = [];
+            selectedPassengers = [];
             for (var i = 0; i < passengerList.options.length; i++) {
                 if (passengerList.options[i].selected) {
                     selectedPassengers.push(passengerList.options[i].value);
                 }
             }
+            console.log(selectedPassengers)
             document.getElementById("selectedshit").innerHTML = selectedPassengers.length + " passengers selected";
 
 
             // cycle through list of passengers and allow option to select economy or business, and choose luggage options
+        }
 
+        var htmlEdit = ``;
+
+        $("#confirm_passengers").click(function() {
+            
             htmlEdit = ``;
-
-
             for (var i = 0; i < selectedPassengers.length; i++) {
-                htmlEdit += `
-                <div class="input-group mb-3 w-100">
-                    <label class="input-group-text" for="selectPassenger">${selectedPassengers[i]}</label>
-                    <select class="form-select" id="selectPassenger" required>
-                        <option value="economy">Economy</option>
-                        <option value="business">Business</option>
-                    </select>
-                </div>
+                alert(selectedPassengers[i])
 
-                <div class="input-group mb-3 w-100">
-                    <label class="input-group-text" for="selectPassenger">Luggage</label>
-                    <select class="form-select" id="selectPassenger" required>
-                        <option selected>None</option>
-                        <option value="1">Medium</option>
-                        <option value="2">Large</option>
-                    </select>
-                </div>
-                `;
-                if (selectedPassengers.length - i > 1) {
-                    htmlEdit += `<hr class="w-75 mb-3" style="margin:auto">`;
-                }
+
+
+                $.ajax({
+                    url: '/passengerDetails',
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: {
+                        passenger_id: selectedPassengers[i],
+                    },
+                    success: function (response) {
+                        
+                        console.log(response)
+                        htmlEdit += `
+                        <div class="input-group mb-3 w-100">
+                            <label class="input-group-text" for="ticketType">` + response.first_name + `</label>
+                            <select class="form-select" id="ticketType" required>
+                                <option value="economy">Economy</option>
+                                <option value="business">Business</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group mb-3 w-100">
+                            <label class="input-group-text" for="luggageType">Luggage</label>
+                            <select class="form-select" id="luggageType" required>
+                                <option selected>None</option>
+                                <option value="1">Medium</option>
+                                <option value="2">Large</option>
+                            </select>
+                        </div>
+                        `;
+                        if (selectedPassengers.length - i > 1) {
+                            htmlEdit += `<hr class="w-75 mb-3" style="margin:auto">`;
+                        }
+
+                        
+                        console.log(htmlEdit)
+
+                        document.getElementById("passengerInfo").innerHTML = htmlEdit;
+                    }
+                })
+
+
             }
 
-            document.getElementById("passengerInfo").innerHTML = htmlEdit;
-        }
+        })
+
+
+
+
+
     </script>
-    
+
 
 
     {% endblock %}

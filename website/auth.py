@@ -111,11 +111,21 @@ def passengerDetails():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
-    
+
+    print("in passengerDetails")
+
     if request.is_json:
         if request.method == 'GET':
-            passenger = Passenger.getPassengerByUIDandPID(passengerID=request.args.get('passengerID'))
-            return jsonify(passenger)
+            passengerID = request.args.get('passenger_id')
+            print(passengerID)
+            print("in passengerDetails if")
+            passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerID)
+
+            print(passengerValid)
+
+            return jsonify(passengerValid)
+
+
 
 @auth.route('/booking', methods=['GET', 'POST'])
 def booking():
@@ -129,7 +139,6 @@ def booking():
     flight_date = request.args.get('flight_date')
     passengers = Passenger.getPassengers_byUserID()
 
-    
     
 
     print("in booking finish")
@@ -150,12 +159,7 @@ def search():
             return jsonify(Ajax.Flight.search(departure, destination))
         
 
-    if (request.form.get('action') == 'selectFlight'):
-        flight = Flight.getFlight(id=request.form.get('flightID'))
-        passengers = Passenger.getPassengers_byUserID()
-        return render_template("booking.html", flight=flight, passengers=passengers)
-
-
+    
     return render_template(
         "search.html", 
         flightDepartNames=Flight.getFlight_Distinct_Depart(),

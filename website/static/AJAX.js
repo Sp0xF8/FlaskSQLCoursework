@@ -50,7 +50,8 @@ $(document).ready(function() {
                                         </div>
                                     </div>
 
-                                    <form method="POST">
+                                    <form action="/booking" method="GET">
+                                        <input type="date" class="form-control" name="flight_date" required>
                                         <input type="hidden" name="flightID" value="` + response[x].flight_id + `">
                                         <input type="hidden" name="action" value="selectFlight">
                                         <button class="btn btn-primary w-50" type="submit">Book</button>
@@ -70,24 +71,4 @@ $(document).ready(function() {
 
         })
     });
-
-
-    //Create function to get the passengers detials given an ID
-    function getPassengerDetails(id) {
-        $.ajax({
-            url: '/passengerDetails',
-            type: 'get',
-            contentType: 'application/json',
-            data: {
-                departure: id,
-            },
-            success: function(response) {
-
-
-                return response;
-
-            }
-        })
-    }
-
 })

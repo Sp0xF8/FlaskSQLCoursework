@@ -126,6 +126,8 @@ class Passenger:
 
     def getPassengerByUIDandPID(passengerID):
         userID = session.get('userID')
+        print(userID)
+        print(passengerID)
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s AND id = %s", (userID, passengerID))
         
         return cursor.fetchone()

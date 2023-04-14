@@ -1,4 +1,4 @@
-from .sqlHandeling import Flight, Flash
+from .sqlHandeling import Flight, Flash, Passenger
 
 
 def departORdest(departure, destination):
@@ -92,4 +92,43 @@ class Ajax:
                 print(result)
 
                 return result
+
+        def getPassengerDetailsByID(passenger_id):
+            passengerInvalid = Passenger.getPassengerByUIDandPID(passenger_id)
+            print(passengerInvalid)
+            print("printed passengerInvalid")
+
+            passengerValid = {}
+
+
+            if (passengerInvalid):
+
+                passenger__id = str(passengerInvalid[0])
+                user_id = str(passengerInvalid[1])
+                first_name = str(passengerInvalid[2])
+                last_name = str(passengerInvalid[3])
+                date_of_birth = str(passengerInvalid[4])
+                gender = str(passengerInvalid[5])
+                passport_number = str(passengerInvalid[6])
+
+
+
+                passengerValid.update({
+                        "passenger_id": passenger__id,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "date_of_birth": date_of_birth,
+                        "gender": gender,
+                        "passport_number": passport_number,
+                    })
+
+                print(passengerValid)
+                print("printed passengerValid")
+                return passengerValid
+            else:
+                Flash.error("Passenger not found")
+                return
+
+
+            
 
