@@ -91,8 +91,6 @@
 
                 </div>
 
-
-
                 <!-- B O O K I N G  D E T A I L S -->
 
                 <div class="card mb-3 shadows">
@@ -139,19 +137,24 @@
             document.getElementById("editOption").innerHTML = "Hold CTRL to select multiple";
         }
 
-        var selectedPassengers = [];
+        var selectedPassengers = {};
 
 
         function PassengerList() {
             var passengerList = document.getElementById("selectPassenger");
-            selectedPassengers = [];
+            selectedPassengers = {};
+            console.log(selectedPassengers);
+            console.log(Object.keys(selectedPassengers).length);
+
+
             for (var i = 0; i < passengerList.options.length; i++) {
                 if (passengerList.options[i].selected) {
-                    selectedPassengers.push(passengerList.options[i].value);
+
+                    selectedPassengers[i] = {passenger_id: passengerList.options[i].value};
                 }
             }
-            console.log(selectedPassengers)
-            document.getElementById("selectedshit").innerHTML = selectedPassengers.length + " passengers selected";
+
+            document.getElementById("selectedshit").innerHTML = Object.keys(selectedPassengers).length + " passengers selected";
 
 
             // cycle through list of passengers and allow option to select economy or business, and choose luggage options
@@ -160,9 +163,11 @@
         var htmlEdit = ``;
 
         $("#confirm_passengers").click(function() {
-            
+
+
             htmlEdit = ``;
-            for (var i = 0; i < selectedPassengers.length; i++) {
+
+            for (var i = 0; i < Object.keys(selectedPassengers).length; i++) {
                 alert(selectedPassengers[i])
 
 
@@ -172,10 +177,10 @@
                     type: 'GET',
                     contentType: 'application/json',
                     data: {
-                        passenger_id: selectedPassengers[i],
+                        passenger_id: selectedPassengers[i].passenger_id,
                     },
                     success: function (response) {
-                        
+                        console.log("success")
                         console.log(response)
                         htmlEdit += `
                         <div class="input-group mb-3 w-100">
@@ -194,20 +199,26 @@
                                 <option value="2">Large</option>
                             </select>
                         </div>
+
+                        <hr class="w-75 mb-3" style="margin:auto">
                         `;
-                        if (selectedPassengers.length - i > 1) {
-                            htmlEdit += `<hr class="w-75 mb-3" style="margin:auto">`;
-                        }
 
                         
                         console.log(htmlEdit)
 
                         document.getElementById("passengerInfo").innerHTML = htmlEdit;
+
+                        
                     }
+
+
+
                 })
 
 
             }
+
+
 
         })
 
