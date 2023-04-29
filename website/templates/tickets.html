@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block title %}Tickets{% endblock %}
+{% block content %}
+
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    .TaC{
+        text-align: center;
+    }
+</style>
+
+    <div class="container-fluid regMain">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">View your tickets!</h4>
+                <p class="card-text">Here, you can easily check your flight information and request a cancellation</p>
+
+                <hr>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="TaC">First Name</th>
+                            <th scope="col" class="TaC">Departing</th>
+                            <th scope="col" class="TaC">Time</th>
+                            <th scope="col" class="TaC">Arriving</th>
+                            <th scope="col" class="TaC">Time</th>
+                            <th scope="col" class="TaC">Date</th>
+                            <th scope="col" class="TaC">Type</th>
+                            <th scope="col" class="TaC">Luggage</th>
+                            <th scope="col" class="TaC">Delete</th>
+
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in range(length) %}
+
+                        
+                        <tr>
+                            <td class="TaC">{{first_names[x]}}</td>
+                            <td class="TaC">{{flightInfo[x][1]}}</td>
+                            <td class="TaC">{{flightInfo[x][3]}}</td>
+                            <td class="TaC">{{flightInfo[x][2]}}</td>
+                            <td class="TaC">{{flightInfo[x][4]}}</td>
+                            <td class="TaC">{{ticketList[x][3]}}</td>
+                            <td class="TaC">
+                                {% if (ticketList[x][4] == 1) %}
+                                Economy
+                                {% elif (ticketList[x][4] == 2) %}
+                                Business
+                                {% endif %}
+                            </td>
+                            <td class="TaC">
+                                {% if (ticketList[x][5] == 1) %}
+                                15kg
+                                {% elif (ticketList[x][5] == 2) %}
+                                25kg
+                                {% elif (ticketList[x][5] == 3) %}
+                                2 x 25kg
+                                {% endif %}
+                            </td>
+                            <td class="TaC">
+
+                                <form method="POST">
+                                    <input type="checkbox" name="ConfirmCancel" value="ConfirmCancel" class="styleInline" required>
+                                    <input type="hidden" name="action" value="requestCancel" class="styleInline">
+                                    <input type="hidden" name="ticketID" value="{{ticketList[x][0][0]}}" class="styleInline">
+                                    <button type="submit" class="btn btn-danger styleInline" style="margin-left:10px">Cancel</button>
+                                </form>
+
+                            </td>
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -3,6 +3,7 @@ from datetime import date
 
 
 from .sqlHandeling import User, Flight, Passenger, Ticket
+from .ajax import Ajax
 
 auth = Blueprint('auth', __name__)
 
@@ -52,9 +53,13 @@ def sign_up():
             flash('Last name must be greater than 3 characters.', category='error')
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
+        elif User.emailExists(email):
+            flash('Email already exists.', category='error')
         elif len(phone) < 10:
             flash('Phone number must be greater than 10 characters.',
                   category='error')
+        elif User.phoneExists(phone):
+            flash('Phone number already exists.', category='error')
         elif len(password) < 7:
             flash('Password must be greater than 7 characters.', category='error')
         elif password != passwordConfirm:
@@ -100,80 +105,65 @@ def admin():
 
     return render_template("admin.html", userList=users, flightList=flights)
 
+@auth.route('/processPayment', methods=['GET', 'POST'])
+def processPayment():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        Ticket.insertTicket(data)
+        return "success"
 
-@auth.route('/bookings', methods=['GET', 'POST'])
-def bookings():
+
+@auth.route('/passengerDetails', methods=['GET', 'POST'])
+def passengerDetails():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+    if request.method == "POST":
+        passengerIDs = request.get_json()
+        passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerIDs)
+        return jsonify(passengerValid)
+   
+
+
+@auth.route('/booking', methods=['GET', 'POST'])
+def booking():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
-    action = request.form.get('action')
-
-    destination = request.form.get('destination')
-    departure = request.form.get('departure')
-
-    if request.method == 'POST':
-        if (action == 'searchFlights'):
-            if (destination and departure):
-                flights = Flight.getFlightFromTo(departure, destination)
-
-                if (flights):
-                    
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "bookings.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-
-                else:
-                    flash('No flights found!', category='error')
-
-                    
-            elif (destination and not departure):
-                flights = Flight.getFlightTo(destination)
-
-                if(flights):
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "bookings.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-                else:
-                    flash(' No flights found!', category='error')
-
-            elif(departure and not destination):
-                flights = Flight.getFlightFrom(departure)
-                if(flights):
-                    flash('Flights found!', category='success')
-                    return render_template(
-                        "bookings.html", 
-                        passengerList=Passenger.getPassengers_byUserID(), 
-                        flightList=Flight.getFlights(), 
-                        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
-                        flightDestNames=Flight.getFlight_Distinct_Dest(),
-                        departANDdest=flights
-                        )
-                else:
-                    flash('No flights found!', category='error')
-
-            else:
-                flash('Please select a destination and/or departure!', category='error')
+    flight = Flight.getFlight(id=request.args.get('flightID'))
+    flight_date = request.args.get('flight_date')
+    passengers = Passenger.getPassengers_byUserID()
 
     
 
+    print("in booking finish")
+    return render_template("booking.html", flight=flight, flight_date=flight_date, passengers=passengers)
+
+
+@auth.route('/search', methods=['GET', 'POST'])
+def search():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    if request.is_json:
+
+        if request.method == 'GET':
+            departure = request.args.get('departure')
+            destination = request.args.get('destination')
+            return jsonify(Ajax.Flight.search(departure, destination))
+        
+
+    
     return render_template(
-        "bookings.html", 
-        passengerList=Passenger.getPassengers_byUserID(), 
-        flightList=Flight.getFlights(), 
-        flightDepartNames=Flight.getFlight_Distinct_Depart(), 
+        "search.html", 
+        flightDepartNames=Flight.getFlight_Distinct_Depart(),
         flightDestNames=Flight.getFlight_Distinct_Dest()
         )
 
@@ -207,6 +197,21 @@ def passengers():
            
     
     return render_template("passengers.html", passengerList=passengers)
+
+@auth.route('/tickets', methods=['GET', 'POST'])
+def tickets():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'GET':
+        tickets = Ticket.getTickets_byUserID()
+        flightInfo = Flight.getFlightbyIDforTicket(tickets)
+        length = len(tickets)
+
+        first_names = Passenger.getPassenger_byPassengerID(tickets)
+        print(first_names)
+        return render_template("tickets.html", ticketList=tickets, flightInfo=flightInfo, length=length, first_names=first_names)
 
 @auth.route('/process', methods=['POST'])
 def process():

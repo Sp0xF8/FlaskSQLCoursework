@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block title %}Bookings{% endblock %}
+{% block content %}
+
+<style>
+    .regMain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+
+    .centered-element {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 148px;
+    }
+
+    .flightCard {
+        width:45%; 
+        margin:auto;
+        display:inline-block;
+    }
+
+    .bodyFlightCard {
+        padding: auto;
+    }
+
+    @media (max-width: 768px) {
+        .regMain {
+            width: 95%;
+        }
+
+        .flightCard {
+            width: 100%;
+        }
+
+        .bodyFlightCard {
+            height: 100%;
+            padding: 0px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="container-fluid regMain">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Search Flights!</h4>
+            <p class="card-text">Search flights to your favourite destinations!</p>
+
+            <form>
+                <form>
+                    <!-- F L I G H T  S E A R C H -->
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="departure">Departure</label>
+                        <select class="form-select" id="departure">
+                            <option></option>
+
+                            {% for flight in flightDepartNames %}
+
+                            <option value="{{ flight[0] }}">{{ flight[0] }}</option>
+
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="destination">Destination</label>
+                        <select class="form-select" id="destination">
+                            <option selected></option>
+
+                            {% for flight in flightDestNames %}
+
+                            <option value="{{ flight[0] }}">{{ flight[0] }}</option>
+
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mb-3" onclick() id="searchFlights" type="button">Search</button>
+
+                </form>
+
+                <!-- F L I G H T  S E A R C H  R E S U L T -->
+
+                <div id="editable">
+
+                </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
