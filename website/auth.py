@@ -105,6 +105,19 @@ def admin():
 
     return render_template("admin.html", userList=users, flightList=flights)
 
+@auth.route('/processPayment', methods=['GET', 'POST'])
+def processPayment():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+    
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        Ticket.insertTicket(data)
+        return "success"
+
+
 @auth.route('/passengerDetails', methods=['GET', 'POST'])
 def passengerDetails():
     if(not User.isLoggedin()):
@@ -184,6 +197,21 @@ def passengers():
            
     
     return render_template("passengers.html", passengerList=passengers)
+
+@auth.route('/tickets', methods=['GET', 'POST'])
+def tickets():
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'GET':
+        tickets = Ticket.getTickets_byUserID()
+        flightInfo = Flight.getFlightbyIDforTicket(tickets)
+        length = len(tickets)
+
+        first_names = Passenger.getPassenger_byPassengerID(tickets)
+        print(first_names)
+        return render_template("tickets.html", ticketList=tickets, flightInfo=flightInfo, length=length, first_names=first_names)
 
 @auth.route('/process', methods=['POST'])
 def process():

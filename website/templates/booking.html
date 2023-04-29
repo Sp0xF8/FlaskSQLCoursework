@@ -67,6 +67,7 @@
                         </h2>
                     </div>
                     <p hidden="true" id="flight_id">{{flight[0][0]}}</p>
+                    <p hidden="true" id="flight_price">{{flight[0][5]}}</p>
 
                     <div class="card-body">
                         <div class="card shadows" style="width: 46%; display:inline-block;">
@@ -120,6 +121,7 @@
 
                             <div class="input-group mb-3 w-100" id="passengerInfo">
                             </div>
+                            <button class="btn btn-success mb-3 w-100" type="button" data-bs-toggle="modal" data-bs-target="#paymentModel" id="PaymentProcess" style="text-align:center;" hidden>Proceed to Payment</button>
                         </form>
                     </div>
 
@@ -128,6 +130,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="paymentModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Payment Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="card-text" style="text-align:right;">{{flight_date}}</h5>
+                    <br>
+                    <hr style="width:40%; margin:auto;">
+                    <br>
+                    <h5 class="modal-title" style="text-align:center;">{{flight[0][1]}} to {{flight[0][2]}}</h5>
+                    <p class="modal-title" style="text-align:center" id="finalPrice"></p>
+                    <br>
+                    <hr  style="width:40%; margin:auto;">
+                    <br>
+
+
+                    <form>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="cardHolder">Card Holder</label>
+                            <input type="text" class="form-control" id="cardHolder" placeholder="Jack Johnson" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="cardNumber">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9101 1121"
+                                required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="cardExpiry">Expiry Date</label>
+                            <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="cardCVV">CVV</label>
+                            <input type="text" class="form-control" id="cardCVV" placeholder="123" required>
+                        </div>
+
+                        <!-- confirm payment -->
+                        <h6 class="card-text" style="text-align:right;">Confirm payment</h6>
+                        <input type="checkbox" class="form-check-input" style="float:right;" id="confirmPayment" required>
+                    
+    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick"" id="make_payment">Make Payment</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
 
     <script>
 
@@ -141,6 +195,7 @@
 
         var flight_id = urlParams.get('flightID')
         var flight_date = urlParams.get('flight_date')
+        var flight_price = parseInt(document.getElementById("flight_price").innerText);
 
         var bookingInfo = [];
 
@@ -179,43 +234,98 @@
 
         $("#confirm_passengers").click(function() {
             var htmlEdit = "";
+            console.log(Object.keys(bookingInfo).length - 1);
+            if(Object.keys(bookingInfo).length > 0){
 
-            for(var x = 0; x < (Object.keys(bookingInfo).length - 1); x ++ ){
-                console.log(bookingInfo[x].passenger_id);
-
-                htmlEdit += `
-                    <h3 class="mb-2 w-100" style="text-align:center;">`+ bookingInfo[x].first_name +`'s Ticket</h3>
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="ticketType-`+ bookingInfo[x].passenger_id +`">Ticket Type</label>
-                        <select class="form-select" id="ticketType-`+ bookingInfo[x].passenger_id +`" required>
-                            <option value="1">Economy</option>
-                            <option value="2">Business</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="luggageType-`+ bookingInfo[x].passenger_id +`">Luggage Type</label>
-                        <select class="form-select" id="luggageType-`+ bookingInfo[x].passenger_id +`" required>
-                            <option value="1">15kg</option>
-                            <option value="2">25kg</option>
-                            <option value="3">2 x 25kg</option>
-                        </select>
-                    </div>
-
-                    <hr style="width:70%; margin:auto; margin-bottom:1rem;">
-                `;
+                for(var x = 0; x < (Object.keys(bookingInfo).length - 1); x ++ ){
+                    console.log(bookingInfo[x].passenger_id);
+    
+                    htmlEdit += `
+                        <h3 class="mb-2 w-100" style="text-align:center;">`+ bookingInfo[x].first_name +`'s Ticket</h3>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="ticketType-`+ bookingInfo[x].passenger_id +`">Ticket Type</label>
+                            <select class="form-select" id="ticketType-`+ bookingInfo[x].passenger_id +`" required>
+                                <option value="1">Economy</option>
+                                <option value="2">Business</option>
+                            </select>
+                        </div>
+    
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="luggageType-`+ bookingInfo[x].passenger_id +`">Luggage Type</label>
+                            <select class="form-select" id="luggageType-`+ bookingInfo[x].passenger_id +`">
+                                <option value="1">15kg</option>
+                                <option value="2">25kg</option>
+                                <option value="3">2 x 25kg</option>
+                            </select>
+                        </div>
+    
+                    `;
+    
+                    if(x != (Object.keys(bookingInfo).length - 2)){
+                        htmlEdit += `
+                            <hr style="width:70%; margin:auto; margin-bottom:1rem;">
+                        `;
+                    }
+                }
+    
+                document.getElementById("passengerInfo").innerHTML = htmlEdit;
+                document.getElementById("PaymentProcess").hidden = false;
+                document.getElementById("finalPrice").innerHTML = "Total Price: £" + parseInt(Object.keys(bookingInfo).length - 1) * flight_price;
+            } else {
+                alert("Please select a passenger");
             }
 
-            htmlEdit += `
-                <button class="btn btn-success mb-3 w-100" type="button" onclick="" id="proceed_payment" style="text-align:center;">Proceed to Payment</button>
-            `;
-
-            document.getElementById("passengerInfo").innerHTML = htmlEdit;
         
 
-        })
+        });
+
+        $("#make_payment").click(function(){
+
+            var ticketInfo = [];
+            /*
+
+                use information gathered inside of booking into to make a ajax post request 
 
 
+            */
+
+            for(var x = 0; x < (Object.keys(bookingInfo).length - 1); x ++ ){
+
+                var temp = String("ticketType-" +  bookingInfo[x].passenger_id)
+                var ticketType = document.getElementById(temp).value;
+
+                temp = String("luggageType-" +  bookingInfo[x].passenger_id)
+                var luggageType = document.getElementById(temp).value;
+
+                ticketInfo.push({
+                    "passenger_id": bookingInfo[x].passenger_id,
+                    "flight_id": flight_id,
+                    "flight_date": flight_date,
+                    "ticketType": ticketType,
+                    "luggageType": luggageType
+                });
+                
+            }
+
+            console.log(ticketInfo);
+
+            $.ajax({
+                url: '/processPayment',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: "JSON",
+                data: JSON.stringify(ticketInfo),
+                success: function(response) {
+                    
+
+                    
+                }
+            });
+
+            alert("Payment Successful - Redirecting to Tickets Page");
+            window.location.href = "/tickets";
+
+        });
 
 
 

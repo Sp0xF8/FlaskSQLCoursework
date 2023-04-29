@@ -5,6 +5,8 @@ from flask import flash, session
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
+admins = [1]
+
 
 db = sql.connect(
     host = "localhost",
@@ -15,16 +17,6 @@ db = sql.connect(
 
 cursor = db.cursor()
 
-
-
-
-
-#cursor.execute("CREATE TABLE Users (id INT AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(100), last_name VARCHAR(50), email VARCHAR(150), password VARCHAR(255), phone VARCHAR(15), address VARCHAR(255), zip VARCHAR(15),  date_created DATETIME )")
-
-#cursor.execure("CREATE TABLE Flights (id INT AUTO_INCREMENT PRIMARY KEY, departure VARCHAR(100), destination VARCHAR(50), departure_time time, arrival_time time, price float(3))")
-
-
-#curser.execute('CREATE TABLE Tickets ( id int NOT NULL,  flight_id int NOT NULL, passenger_id int NOT NULL, flight_date date NOT NULL, seat VARCHAR(4) NOT NULL, luggage_small int NOT NULL, luggage_large int NOT NULL, PRIMARY KEY (id), CONSTRAINT FK_flightID FOREIGN KEY (flight_id) REFERENCES Flights(id), CONSTRAINT FK_passengerID FOREIGN KEY (passenger_id) REFERENCES Passengers(id)')
 
 ##
 ##
@@ -53,9 +45,27 @@ class Flash():
 ##
 
 class Ticket:
-    def insertTicket(ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large):
-        cursor.execute("INSERT INTO Tickets (ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large) VALUES (%s, %s, %s, %s, %s, %s, %s)", (ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large))
-        db.commit()
+    def insertTicket(data):
+        print("inserting ticket")
+
+        for each in data:
+
+            passenger_id = each.get('passenger_id')
+            flight_id = each.get('flight_id')
+            flight_date = each.get('flight_date')
+            luggage_type = each.get('luggageType')
+            ticket_type = each.get('ticketType')
+            
+            print(each)
+
+            cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type) VALUES (%s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type))
+            print("inserted ticket")
+            db.commit()
+            
+
+
+
+        
 
     def getTicket(id):
         cursor.execute("SELECT * FROM Tickets WHERE id = %s", (id,))
@@ -72,12 +82,32 @@ class Ticket:
         db.commit()
     
     def getTickets_byUserID():
-        userID = session.get('userID')
-        passengers = Passenger.getPassengers_byUserID(userID)
+        passengers = Passenger.getPassengers_byUserID()
+        print("printing passengers")
+        print(passengers)
         info = []
-        for passenger in passengers:
-            info.append(curser.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],)))
+        print()
         
+        for passenger in passengers:
+            cursor.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],))
+            temp = cursor.fetchall()
+            print("printing temp")
+            print(temp)
+            print()
+            if len(temp) > 1:
+                for each in temp:
+                    print("printing each")
+                    print(each)
+                    info.append(each)
+            else:
+                info.append(temp[0])
+
+
+        print("printing tickets")
+        print(info)
+        print()
+        print()
+
         return info
 
 
@@ -135,6 +165,28 @@ class Passenger:
         cursor.execute("SELECT id, first_name FROM Passengers WHERE user_id = %s", (id,))
         return cursor.fetchall()
     
+    def getPassenger_byPassengerID(tickets):
+        info = []
+
+        for ticket in tickets:
+            print("printing passenger id")
+            print(ticket[1])
+            cursor.execute("SELECT * FROM Passengers WHERE id = %s", (ticket[1],))
+            temp = cursor.fetchall()
+            print("printing temp")
+            print(temp[0][2])
+            
+            info.append(temp[0][2])
+
+        print("printing passenger info")
+        print(info)
+
+        return info
+        
+
+
+
+    
 
 
 
@@ -164,6 +216,20 @@ class Flight:
     def getFlight(id):
         cursor.execute("SELECT * FROM Flights WHERE id = %s", (id,))
         return cursor.fetchall()
+
+    def getFlightbyIDforTicket(tickets):
+        data = []
+        
+        for ticket in tickets:
+            cursor.execute("SELECT * FROM Flights WHERE id = %s", (ticket[2],))
+            temp = cursor.fetchall()
+            data.append(temp[0])
+        
+        print("printing flights")
+        print(data)
+        print()
+        print()
+        return data
 
 
         ## Returns an array of flights with the given departure and destination
@@ -291,10 +357,15 @@ class User:
 
     def isAdmin():
         if session.get('loggedin'):
-            if session.get('userID') == 1:
-                return True
-            else:
+            temp = 0;
+            for admin in admins:
+                if session.get('userID') == admin:
+                    temp = 1
+                    break
+            if temp == 0:
                 return False
+            else:
+                return True
         else:
             return False
 
