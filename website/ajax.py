@@ -83,7 +83,7 @@ class Ajax:
 
 
             for ids in passenger_id:
-               passengerInvalid.append(Passenger.getPassengerByUIDandPID(ids))
+                passengerInvalid.append(Passenger.getPassengerByUIDandPID(ids))
 
             passengerValid = {}
 

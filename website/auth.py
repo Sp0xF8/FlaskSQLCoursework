@@ -110,13 +110,9 @@ def passengerDetails():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
-
-    print("in passengerDetails")
     if request.method == "POST":
-        print(request.get_json())
         passengerIDs = request.get_json()
         passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerIDs)
-        print(passengerValid)
         return jsonify(passengerValid)
    
 

@@ -116,7 +116,7 @@
                                 </select>
                             </div>
 
-                            <button class="btn btn-success mb-3 w-75" type="button" onclick="" id="confirm_passengers" style="text-align:center;">Confirm Passengers</button>
+                            <button class="btn btn-success mb-3 w-100" type="button" onclick="" id="confirm_passengers" style="text-align:center;">Confirm Passengers</button>
 
                             <div class="input-group mb-3 w-100" id="passengerInfo">
                             </div>
@@ -146,7 +146,7 @@
 
         function PassengerDetails() {
             var passengerList = document.getElementById("selectPassenger");
-            alert("ajax function started")
+
             console.log("passenger dails")
             var info = [];
             var r = 0;
@@ -178,8 +178,40 @@
         }
 
         $("#confirm_passengers").click(function() {
+            var htmlEdit = "";
 
-            console.log(bookingInfo);
+            for(var x = 0; x < (Object.keys(bookingInfo).length - 1); x ++ ){
+                console.log(bookingInfo[x].passenger_id);
+
+                htmlEdit += `
+                    <h3 class="mb-2 w-100" style="text-align:center;">`+ bookingInfo[x].first_name +`'s Ticket</h3>
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="ticketType-`+ bookingInfo[x].passenger_id +`">Ticket Type</label>
+                        <select class="form-select" id="ticketType-`+ bookingInfo[x].passenger_id +`" required>
+                            <option value="1">Economy</option>
+                            <option value="2">Business</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="luggageType-`+ bookingInfo[x].passenger_id +`">Luggage Type</label>
+                        <select class="form-select" id="luggageType-`+ bookingInfo[x].passenger_id +`" required>
+                            <option value="1">15kg</option>
+                            <option value="2">25kg</option>
+                            <option value="3">2 x 25kg</option>
+                        </select>
+                    </div>
+
+                    <hr style="width:70%; margin:auto; margin-bottom:1rem;">
+                `;
+            }
+
+            htmlEdit += `
+                <button class="btn btn-success mb-3 w-100" type="button" onclick="" id="proceed_payment" style="text-align:center;">Proceed to Payment</button>
+            `;
+
+            document.getElementById("passengerInfo").innerHTML = htmlEdit;
+        
 
         })
 
