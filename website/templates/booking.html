@@ -103,7 +103,7 @@
                             <p id="selectedshit"></p>
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="selectPassenger">Who's going?</label>
-                                <select class="form-select" id="selectPassenger" onchange="PassengerList()" required
+                                <select class="form-select" id="selectPassenger" onchange="PassengerList();PassengerDetails();" required
                                     multiple>
 
 
@@ -138,87 +138,58 @@
         }
 
         var selectedPassengers = {};
+        var bookingInfo = [];
+        var flight_date = document.getElementById("flight_date").innerHTML;
+
 
 
         function PassengerList() {
             var passengerList = document.getElementById("selectPassenger");
             selectedPassengers = {};
-            console.log(selectedPassengers);
-            console.log(Object.keys(selectedPassengers).length);
-
-
+            var r = 0;
             for (var i = 0; i < passengerList.options.length; i++) {
+
                 if (passengerList.options[i].selected) {
+                    selectedPassengers[r] = parseInt(passengerList.options[i].value);
+                    
+                    r++;
 
-                    selectedPassengers[i] = {passenger_id: passengerList.options[i].value};
                 }
-            }
 
+            }
+            console.log(selectedPassengers)
             document.getElementById("selectedshit").innerHTML = Object.keys(selectedPassengers).length + " passengers selected";
 
 
-            // cycle through list of passengers and allow option to select economy or business, and choose luggage options
         }
 
-        var htmlEdit = ``;
+        function PassengerDetails() {
+            alert("ajax function started")
+            console.log("passenger dails")
+            var info = [];
+            for (var k = 0; k < Object.keys(selectedPassengers).length; k ++){
+                info.push(selectedPassengers[k]);
+            }
+
+            console.log(info);
+
+            $.ajax({
+                url: '/passengerDetails',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: "JSON",
+                data: JSON.stringify(info),
+                success: function(response) {
+                    console.log(response);
+                    bookingInfo = response;
+                    console.log(bookingInfo);
+                }
+            });
+        }
 
         $("#confirm_passengers").click(function() {
 
-
-            htmlEdit = ``;
-
-            for (var i = 0; i < Object.keys(selectedPassengers).length; i++) {
-                alert(selectedPassengers[i])
-
-
-
-                $.ajax({
-                    url: '/passengerDetails',
-                    type: 'GET',
-                    contentType: 'application/json',
-                    data: {
-                        passenger_id: selectedPassengers[i].passenger_id,
-                    },
-                    success: function (response) {
-                        console.log("success")
-                        console.log(response)
-                        htmlEdit += `
-                        <div class="input-group mb-3 w-100">
-                            <label class="input-group-text" for="ticketType">` + response.first_name + `</label>
-                            <select class="form-select" id="ticketType" required>
-                                <option value="economy">Economy</option>
-                                <option value="business">Business</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group mb-3 w-100">
-                            <label class="input-group-text" for="luggageType">Luggage</label>
-                            <select class="form-select" id="luggageType" required>
-                                <option selected>None</option>
-                                <option value="1">Medium</option>
-                                <option value="2">Large</option>
-                            </select>
-                        </div>
-
-                        <hr class="w-75 mb-3" style="margin:auto">
-                        `;
-
-                        
-                        console.log(htmlEdit)
-
-                        document.getElementById("passengerInfo").innerHTML = htmlEdit;
-
-                        
-                    }
-
-
-
-                })
-
-
-            }
-
-
+            console.log(bookingInfo);
 
         })
 

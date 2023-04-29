@@ -14,7 +14,6 @@ def login():
     if request.method == 'POST':
         email = request.form.get('floatingEmail')
         password = request.form.get('floatingPassword')
-        print(email, password)
 
         if User.userLogin(email, password):
             return redirect(url_for('views.home'))
@@ -106,25 +105,20 @@ def admin():
 
     return render_template("admin.html", userList=users, flightList=flights)
 
-@auth.route('/passengerDetails', methods=['GET'])
+@auth.route('/passengerDetails', methods=['GET', 'POST'])
 def passengerDetails():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
     print("in passengerDetails")
-
-    if request.is_json:
-        if request.method == 'GET':
-            passengerID = request.args.get('passenger_id')
-            print(passengerID)
-            print("in passengerDetails if")
-            passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerID)
-
-            print(passengerValid)
-
-            return jsonify(passengerValid)
-
+    if request.method == "POST":
+        print(request.get_json())
+        passengerIDs = request.get_json()
+        passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerIDs)
+        print(passengerValid)
+        return jsonify(passengerValid)
+   
 
 
 @auth.route('/booking', methods=['GET', 'POST'])
@@ -132,8 +126,6 @@ def booking():
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
-
-    print("in booking")
 
     flight = Flight.getFlight(id=request.args.get('flightID'))
     flight_date = request.args.get('flight_date')

@@ -56,7 +56,6 @@ class Ticket:
     def insertTicket(ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large):
         cursor.execute("INSERT INTO Tickets (ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large) VALUES (%s, %s, %s, %s, %s, %s, %s)", (ticket_id, flight_id, passenger_id, flight_date, seat, luggage_small, luggage_large))
         db.commit()
-        print(cursor.rowcount, " Ticket record inserted.")
 
     def getTicket(id):
         cursor.execute("SELECT * FROM Tickets WHERE id = %s", (id,))
@@ -71,7 +70,6 @@ class Ticket:
     def deleteTicket(id):
         cursor.execute("DELETE FROM Tickets WHERE id = %s", (id,))
         db.commit()
-        print(cursor.rowcount, " Ticket record deleted.")
     
     def getTickets_byUserID():
         userID = session.get('userID')
@@ -80,7 +78,6 @@ class Ticket:
         for passenger in passengers:
             info.append(curser.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],)))
         
-        print(info)
         return info
 
 
@@ -107,7 +104,6 @@ class Passenger:
 
         cursor.execute("INSERT INTO Passengers (user_id, first_name, last_name, date_of_birth, gender, passport_number) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, first_name, last_name, date_of_birth, gender, passport_number))
         db.commit()
-        print(cursor.rowcount, " Passenger record inserted.")
 
     def getPassenger(id):
         cursor.execute("SELECT * FROM Passengers WHERE id = %s", (id,))
@@ -126,8 +122,6 @@ class Passenger:
 
     def getPassengerByUIDandPID(passengerID):
         userID = session.get('userID')
-        print(userID)
-        print(passengerID)
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s AND id = %s", (userID, passengerID))
         
         return cursor.fetchone()
@@ -135,7 +129,6 @@ class Passenger:
     def deletePassenger(id):
         cursor.execute("DELETE FROM Passengers WHERE id = %s", (id,))
         db.commit()
-        print(cursor.rowcount, " Passenger record deleted.")
 
     def getPassenger_User_FirstName():
         id = session.get('userID')
@@ -158,7 +151,6 @@ class Flight:
     def insertFlight(departure1, destination1, departure_time1, arrival_time1, price1):
         cursor.execute("INSERT INTO Flights (departure, destination, departure_time, arrival_time, price) VALUES (%s, %s, %s, %s, %s)", (departure1, destination1, departure_time1, arrival_time1, price1))
         db.commit()
-        print(cursor.rowcount, " Flight record inserted.")
 
 
         ## Returns an array of all flights
@@ -200,7 +192,6 @@ class Flight:
     def deleteFlight(id):
         cursor.execute("DELETE FROM Flights WHERE id = %s", (id,))
         db.commit()
-        print(cursor.rowcount, " Flight record deleted.")
 
     def getFlight_Distinct_Depart():
         cursor.execute("SELECT DISTINCT departure  FROM Flights ORDER BY departure ASC")
@@ -235,18 +226,15 @@ class User:
 
         cursor.execute("INSERT INTO Users (first_name, last_name, email, password, date_of_birth , phone, address, zip, date_created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (first_name1, last_name1, email1, password2, date_of_birth1, phone1, address1, zip1, datenow))
         db.commit()
-        print(cursor.rowcount, "User record inserted.")
 
 
     def dropUserRecord_byID(userID):
         cursor.execute("DELETE FROM Users WHERE id = %s", (userID,))
         db.commit()
-        print(cursor.rowcount, "User record deleted.")
 
     def dropUserRecord_byEmail(email):
         cursor.execute("DELETE FROM Users WHERE email = %s", (email,))
         db.commit()
-        print(cursor.rowcount, "User record deleted.")
 
 
     def getUserRecord_byID(userID):

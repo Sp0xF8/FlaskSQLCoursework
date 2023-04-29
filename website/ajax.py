@@ -20,24 +20,14 @@ class Ajax:
 
     class Flight:
         def search(departure, destination):
-
-            print(f"__{departure}__")
-            print(f"__{destination}__")
-
             mid = departORdest(departure, destination)
 
             result = {}
-
-            print(mid)
-            print("printed mid")
 
             result.update({999: {
                     "index" : str(len(mid))
                     }
                 })
-            
-            print(result)
-
             if (len(mid) == 0):
                 Flash.error("No flights found")
                 return result
@@ -62,8 +52,6 @@ class Ajax:
                         "price": price,
                         "seats_left": seats_left
                     }})
-                
-                print(result)
 
                 return result
 
@@ -88,46 +76,72 @@ class Ajax:
                         "price": price,
                         "seats_left": seats_left
                     }})
-
-                print(result)
-
                 return result
 
         def getPassengerDetailsByID(passenger_id):
-            passengerInvalid = Passenger.getPassengerByUIDandPID(passenger_id)
-            print(passengerInvalid)
-            print("printed passengerInvalid")
+            passengerInvalid = []
 
+
+            for ids in passenger_id:
+               passengerInvalid.append(Passenger.getPassengerByUIDandPID(ids))
+
+            print(passengerInvalid)
             passengerValid = {}
 
+            print(len(passengerInvalid))
 
-            if (passengerInvalid):
+            passengerValid.update({999: {
+                "index" : str(len(passengerInvalid))
+                }
+            })
+            if (len(passengerInvalid) == 0):
+                Flash.error("No Passenger found")
+                return result
+            elif (len(passengerInvalid) > 1):
+                Flash.success("Multiple flights found")
 
-                passenger__id = str(passengerInvalid[0])
-                user_id = str(passengerInvalid[1])
-                first_name = str(passengerInvalid[2])
-                last_name = str(passengerInvalid[3])
-                date_of_birth = str(passengerInvalid[4])
-                gender = str(passengerInvalid[5])
-                passport_number = str(passengerInvalid[6])
+                for i in range(len(passengerInvalid)):
+                    passenger_id = str(passengerInvalid[i][0])
+                    user_id = str(passengerInvalid[i][1])
+                    first_name = str(passengerInvalid[i][2])
+                    last_name = str(passengerInvalid[i][3])
+                    date_of_birth = str(passengerInvalid[i][4])
+                    gender = str(passengerInvalid[i][5])
+                    passport_number = str(passengerInvalid[i][6])
 
-
-
-                passengerValid.update({
-                        "passenger_id": passenger__id,
+                    passengerValid.update({i: {
+                        "passenger_id": passenger_id,
                         "first_name": first_name,
                         "last_name": last_name,
                         "date_of_birth": date_of_birth,
                         "gender": gender,
-                        "passport_number": passport_number,
-                    })
+                        "passport_number": passport_number
+                    }})
 
-                print(passengerValid)
-                print("printed passengerValid")
                 return passengerValid
-            else:
-                Flash.error("Passenger not found")
-                return
+            elif (len(passengerInvalid) == 1):
+                Flash.success("Flight found")
+
+                passenger_id = str(passengerInvalid[0][0])
+                user_id = str(passengerInvalid[0][1])
+                first_name = str(passengerInvalid[0][2])
+                last_name = str(passengerInvalid[0][3])
+                date_of_birth = str(passengerInvalid[0][4])
+                gender = str(passengerInvalid[0][5])
+                passport_number = str(passengerInvalid[0][6])
+
+
+                passengerValid.update({0: {
+                        "passenger_id": passenger_id,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "date_of_birth": date_of_birth,
+                        "gender": gender,
+                        "passport_number": passport_number
+                    }})
+                return passengerValid
+        
+            
 
 
             
