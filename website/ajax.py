@@ -85,10 +85,7 @@ class Ajax:
             for ids in passenger_id:
                passengerInvalid.append(Passenger.getPassengerByUIDandPID(ids))
 
-            print(passengerInvalid)
             passengerValid = {}
-
-            print(len(passengerInvalid))
 
             passengerValid.update({999: {
                 "index" : str(len(passengerInvalid))
@@ -96,7 +93,7 @@ class Ajax:
             })
             if (len(passengerInvalid) == 0):
                 Flash.error("No Passenger found")
-                return result
+                return passengerValid
             elif (len(passengerInvalid) > 1):
                 Flash.success("Multiple flights found")
 

@@ -103,7 +103,7 @@
                             <p id="selectedshit"></p>
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="selectPassenger">Who's going?</label>
-                                <select class="form-select" id="selectPassenger" onchange="PassengerList();PassengerDetails();" required
+                                <select class="form-select" id="selectPassenger" onchange="PassengerDetails();" required
                                     multiple>
 
 
@@ -136,55 +136,45 @@
         } else {
             document.getElementById("editOption").innerHTML = "Hold CTRL to select multiple";
         }
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
 
-        var selectedPassengers = {};
+        var flight_id = urlParams.get('flightID')
+        var flight_date = urlParams.get('flight_date')
+
         var bookingInfo = [];
-        var flight_date = document.getElementById("flight_date").innerHTML;
 
-
-
-        function PassengerList() {
+        function PassengerDetails() {
             var passengerList = document.getElementById("selectPassenger");
-            selectedPassengers = {};
+            alert("ajax function started")
+            console.log("passenger dails")
+            var info = [];
             var r = 0;
             for (var i = 0; i < passengerList.options.length; i++) {
 
                 if (passengerList.options[i].selected) {
-                    selectedPassengers[r] = parseInt(passengerList.options[i].value);
-                    
+                    info.push(parseInt(passengerList.options[i].value));
                     r++;
-
                 }
-
-            }
-            console.log(selectedPassengers)
-            document.getElementById("selectedshit").innerHTML = Object.keys(selectedPassengers).length + " passengers selected";
-
-
-        }
-
-        function PassengerDetails() {
-            alert("ajax function started")
-            console.log("passenger dails")
-            var info = [];
-            for (var k = 0; k < Object.keys(selectedPassengers).length; k ++){
-                info.push(selectedPassengers[k]);
             }
 
             console.log(info);
+            if(info.length == 0){
+                return;
+            } else{
+                $.ajax({
+                    url: '/passengerDetails',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: "JSON",
+                    data: JSON.stringify(info),
+                    success: function(response) {
+                        bookingInfo = response;
+                    }
+                });
+            }
 
-            $.ajax({
-                url: '/passengerDetails',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: "JSON",
-                data: JSON.stringify(info),
-                success: function(response) {
-                    console.log(response);
-                    bookingInfo = response;
-                    console.log(bookingInfo);
-                }
-            });
+            
         }
 
         $("#confirm_passengers").click(function() {
