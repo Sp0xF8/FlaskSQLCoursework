@@ -68,10 +68,10 @@
                             </td>
                             <td class="TaC">
 
-                                <form method="POST">
-                                    <input type="checkbox" name="ConfirmCancel" value="ConfirmCancel" class="styleInline" required>
-                                    <input type="hidden" name="action" value="requestCancel" class="styleInline">
-                                    <input type="hidden" name="ticketID" value="{{ticketList[x][0][0]}}" class="styleInline">
+                                <form action="/delete_ticket" method="POST">
+                                    <input type="checkbox" name="ConfirmCancel value="" class="styleInline" required>
+                                    <input type="hidden" name="action" value="requestCancel">
+                                    <input type="hidden" name="ticketID" value="{{ticketList[x][0]}}">
                                     <button type="submit" class="btn btn-danger styleInline" style="margin-left:10px">Cancel</button>
                                 </form>
 
@@ -95,5 +95,14 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        var listToRemove = [];
+        function confirmCancel(ticketID) {
+            listToRemove.push();
+            
+        }
+    </script>
 
 {% endblock %}

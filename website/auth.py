@@ -87,6 +87,49 @@ def sign_up():
     return render_template("register.html")
 
 
+@auth.route('/edit_profile', methods=['POST'])
+def edit_profile():
+    
+        if(not User.isLoggedin()):
+            flash('You are not logged in.', category='error')
+            return redirect(url_for('auth.login'))
+    
+        if request.method == 'POST':
+
+            current_password = request.form.get('current_password')
+            if (not User.passCheck(current_password)):
+                flash('Current password is incorrect.', category='error')
+                return "Incorrect password."
+    
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            email = request.form.get('email')
+            phone = request.form.get('phone')
+            address = request.form.get('address')
+            zip_code = request.form.get('zip_code')
+
+            if (request.form.get('confirm_password')):
+                password = request.form.get('confirm_password')
+                User.updateUser(first_name, last_name, email, password, phone, address, zip_code)
+            else:
+                User.updateUser_noPass(first_name, last_name, email, phone, address, zip_code)
+
+            return "Account Updated!"
+            
+
+
+
+@auth.route('/profile', methods=['GET'])
+def profile():
+
+    if(not User.isLoggedin()):
+        flash('You are not logged in.', category='error')
+        return redirect(url_for('auth.login'))
+
+    return render_template("profile.html", 
+            user=User.getUser())
+
+
 @auth.route('/admin', methods=['GET', 'POST'])
 def admin():
 
@@ -224,6 +267,19 @@ def passengers():
             flash('Passenger added!', category='success')
         
     return render_template("passengers.html", passengerList=passengers, datenow=datenow)
+
+@auth.route('/delete_ticket', methods=['GET', 'POST'])
+def delete_ticket():
+    
+        if(not User.isLoggedin()):
+            flash('You are not logged in.', category='error')
+            return redirect(url_for('auth.login'))
+    
+        if request.method == 'POST':
+            Ticket.deleteTicket(request.form.get('ticketID'))
+            flash('Ticket deleted!', category='success')
+    
+        return redirect(url_for('auth.tickets'))
 
 @auth.route('/tickets', methods=['GET', 'POST'])
 def tickets():

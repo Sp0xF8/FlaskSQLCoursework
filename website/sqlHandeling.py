@@ -302,6 +302,17 @@ class User:
         session.pop('firstName', None)
         flash('Logged out successfully!', category='success')
 
+    def updateUser(first_name, last_name, email, password, phone, address, zip_code):
+
+        password2 = generate_password_hash(password, method='sha256')
+
+        cursor.execute("UPDATE Users SET first_name = %s, last_name = %s, email = %s, password = %s, phone = %s, address = %s, zip = %s WHERE id = %s", (first_name, last_name, email, password2, phone, address, zip_code, session.get('userID')))
+        db.commit()
+
+    def updateUser_noPass(first_name, last_name, email, phone, address, zip_code):
+        
+        cursor.execute("UPDATE Users SET first_name = %s, last_name = %s, email = %s, phone = %s, address = %s, zip = %s WHERE id = %s", (first_name, last_name, email, phone, address, zip_code, session.get('userID')))
+        db.commit()
 
     def loginHelperEmail(email):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
@@ -311,6 +322,24 @@ class User:
         else:
             return False
 
+    def getUser():
+        if session.get('loggedin'):
+            cursor.execute("SELECT * FROM Users WHERE id = %s", (session.get('userID'),))
+            user = cursor.fetchone()
+            return user
+        else:
+            return False
+
+    def passCheck(password):
+        cursor.execute("SELECT * FROM Users WHERE id = %s", (session.get('userID'),))
+        user = cursor.fetchone()
+        if user:
+            if check_password_hash(user[4], password):
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def userLogin(email, password):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
