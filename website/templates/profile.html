@@ -1,0 +1,148 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %}
+{% block content %}
+
+<style>
+    .Main {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    .TaC {
+        text-align: center;
+    }
+
+    @media only screen and (min-width:600px) {
+        #back {
+            width: 25%;
+        }
+
+        #save {
+            width: 25%;
+        }
+    }
+</style>
+
+<div class="container-fluid Main">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Settings</h4>
+            <p class="card-text">Edit you Account Settings</p>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" value="{{user[1]}}" placeholder="{{user[1]}}">
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="last_name">Last Name</label>
+                <input type="text" class="form-control" id="last_name" value="{{user[2]}}" placeholder="{{user[2]}}">
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="email">Email</label>
+                <input type="text" class="form-control" id="email" value="{{user[3]}}" placeholder="{{user[3]}}">
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="phone">Phone</label>
+                <input type="text" class="form-control" id="phone" value="{{user[6]}}" placeholder="{{user[6]}}">
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="address">Address</label>
+                <input type="text" class="form-control" id="address" value="{{user[7]}}" placeholder="{{user[7]}}">
+            </div>
+
+
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="zip">Zip</label>
+                <input type="text" class="form-control" id="zip" value="{{user[8]}}" placeholder="{{user[8]}}">
+            </div>
+
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="new_password">New Password</label>
+                <input type="text" class="form-control" id="new_password" placeholder="New Password">
+            </div>
+
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="confirm_password">Confirm Password</label>
+                <input type="text" class="form-control" id="confirm_password" placeholder="Confirm Password">
+            </div>
+
+            <div class="card w-100">
+                <div class="card-body">
+                    <h4 class="card-title TaC">This field is reuqired before you can change any details.</h4>
+                    <p class="card-text TaC">Please enter your current password to continue.</p>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="current_password">Password</label>
+                        <input type="text" class="form-control" id="current_password" placeholder="Required">
+                    </div>
+
+                    <div style="text-align:center">
+                        <button type="button" class="btn btn-secondary" style="margin-right:0.5rem;" onclick=""
+                            id="back">Back</button>
+                        <button type="button" class="btn btn-primary" style="margin-left:0.5rem;" onclick=""
+                            id="save">Save</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#back").click(function () {
+            window.location.href = "/";
+        });
+
+        $("#save").click(function () {
+            var first_name = $("#first_name").val();
+            var last_name = $("#last_name").val();
+            var email = $("#email").val();
+            var phone = $("#phone").val();
+            var address = $("#address").val();
+            var zip = $("#zip").val();
+            var new_password = $("#new_password").val();
+            var confirm_password = $("#confirm_password").val();
+            var current_password = $("#current_password").val();
+
+            if (first_name == "" || last_name == "" || email == "" || phone == "" || address == "" || zip == "" || current_password == "") {
+                alert("Please fill out all required fields.");
+            } else if (new_password != confirm_password) {
+                alert("New Password and Confirm Password do not match.");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/edit_profile",
+                    data: {
+                        first_name: first_name,
+                        last_name: last_name,
+                        email: email,
+                        phone: phone,
+                        address: address,
+                        zip: zip,
+                        confirm_password: confirm_password,
+                        current_password: current_password
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.href = "/profile";
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -15,9 +15,9 @@ def contact():
 def faq():
     return render_template("faq.html")
 
-@views.route('/gallery')
-def gallery():
-    return render_template("gallery.html")
+# @views.route('/gallery')
+# def gallery():
+#     return render_template("gallery.html")
 
 @views.route('/privacy')
 def privacy():

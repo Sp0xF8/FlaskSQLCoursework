@@ -76,7 +76,7 @@ class Ticket:
 
         passengers = Passenger.getPassengers_byUserID()
         info = []
-        
+
         for passenger in passengers:
             cursor.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],))
             temp = cursor.fetchall()
@@ -86,11 +86,10 @@ class Ticket:
                     info.append(each)
 
             elif len(temp) == 0:
-                return info
+                pass
 
             else:
                 info.append(temp[0])
-
 
         return info
 
@@ -99,8 +98,7 @@ class Ticket:
         cursor.execute("SELECT * FROM Tickets WHERE flight_date = %s AND flight_id = %s", (flight_date, flight_id))
         
         temp = cursor.fetchall()
-        print(temp)
-        print(len(temp))
+
         return len(temp)
             
             
@@ -206,11 +204,7 @@ class Flight:
             cursor.execute("SELECT * FROM Flights WHERE id = %s", (ticket[2],))
             temp = cursor.fetchall()
             data.append(temp[0])
-        
-        print("printing flights")
-        print(data)
-        print()
-        print()
+    
         return data
 
 
