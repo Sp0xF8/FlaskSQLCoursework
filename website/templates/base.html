@@ -9,7 +9,7 @@
 
             <script src="../static/bootstrap.bundle.js"></script>
 
-            <link href="../static/Harry/styles.css">
+            <link href="../static/style.css">
 
             <script src="../static/jQuery.js"></script>
 
@@ -23,7 +23,14 @@
                 html {
                     height: 100%;
                     width: 100%;
+                    
                 }
+
+                html {
+                    background-image: url("../static/Imgs/summer-bg.jpeg");
+                    
+                }
+
 
                 .navReg {
                     float: right;
@@ -55,13 +62,22 @@
 
                 }
 
+                .container-fluid > .card {
+                    box-shadow: black 0px 0px 10px 0px;
+                    opacity: 0.9;
+                } 
+
                 .top {
                     margin-top: 60px;
+                }
+                button {
+                    opacity: none;
                 }
 
 
 
                 @media only screen and (max-width:600px) {
+                    
                     .menu {
                         min-width: 100%;
                     }
@@ -117,12 +133,7 @@
                     Login
                 </a>
                 {% endif %}
-                <!--    FIX THIS SOMETIME
-                        <button type="button" class="btn btn-primary navLogin" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop">
-                            Login
-                        </button>
-                    -->
+
             </div>
         </nav>
 

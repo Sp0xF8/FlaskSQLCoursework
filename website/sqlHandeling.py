@@ -5,7 +5,7 @@ from flask import flash, session
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-admins = [1,2]
+admins = [1]
 
 
 db = sql.connect(
@@ -310,7 +310,7 @@ class User:
         db.commit()
 
     def updateUser_noPass(first_name, last_name, email, phone, address, zip_code):
-        
+
         cursor.execute("UPDATE Users SET first_name = %s, last_name = %s, email = %s, phone = %s, address = %s, zip = %s WHERE id = %s", (first_name, last_name, email, phone, address, zip_code, session.get('userID')))
         db.commit()
 
