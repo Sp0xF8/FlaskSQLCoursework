@@ -19,6 +19,8 @@
                 <h4 class="card-title">View your tickets!</h4>
                 <p class="card-text">Here, you can easily check your flight information and request a cancellation</p>
 
+                
+
                 <hr>
 
                 <table class="table table-striped">
@@ -81,6 +83,14 @@
                     </tbody>
                 </table>
 
+
+                {% if (length == 0) %}
+                <br>
+                <h4 class="card-text" style="text-align:center">You have no tickets!</h4>
+                <br>
+
+                <a class="btn btn-outline-success w-100" href="/search" >Book a Holiday</a>
+                {% endif %}
 
             </div>
         </div>

@@ -10,11 +10,21 @@ $(document).ready(function() {
             },
             success: function(response) {
 
+
+                var dateTomorrow = new Date();
+                dateTomorrow.setDate(dateTomorrow.getDate() + 1);
+                var tomorrow = dateTomorrow.toISOString().slice(0, 10);
+
+                var twoYearsDate = new Date();
+                twoYearsDate.setDate(twoYearsDate.getDate() + 730);
+                var twoYears = twoYearsDate.toISOString().slice(0, 10);
+
                 
                 
                 var result = '';
 
                 result += `<div style="text-align:center; width:100%;">`
+
 
                 
                 var x = 0;
@@ -30,7 +40,7 @@ $(document).ready(function() {
                                     </h5>
                                     <h5 class="card-title">` + response[x].destination + `</h5>
                                 </div>
-                                <div class="card-body bodyFlightCard">
+                                <div class="card-body bodyFlightCard mb-3">
                                     <div class="card" style="width: 46%; display:inline-block;">
                                         <div class="card-body">
                                             <p class="card-text" style="margin:0; padding:0;">Takeoff</p>
@@ -46,12 +56,12 @@ $(document).ready(function() {
                                             <p class="card-text" style="margin:0; padding:0;">£` + response[x].price + `</p>
                                             <hr style="width:70%; margin:auto;">
                                             <p class="card-text" style="margin:0; padding:0;">Total Seats</p>
-                                            <p class="card-text" style="margin:0; padding:0;">` + response[x].arrival_time + `</p>
+                                            <p class="card-text" style="margin:0; padding:0;">` + response[x].seats_left + `</p>
                                         </div>
                                     </div>
 
                                     <form action="/booking" method="GET">
-                                        <input type="date" class="form-control" name="flight_date" required>
+                                        <input type="date" class="form-control w-75" style="margin:auto;margin-top:1rem;margin-bottom:1rem;" name="flight_date" min="` + tomorrow + `" max="` + twoYears + `" required>
                                         <input type="hidden" name="flightID" value="` + response[x].flight_id + `">
                                         <input type="hidden" name="action" value="selectFlight">
                                         <button class="btn btn-primary w-50" type="submit">Book</button>

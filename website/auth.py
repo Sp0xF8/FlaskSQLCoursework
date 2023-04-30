@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from datetime import date
+from datetime import datetime
 
 
 from .sqlHandeling import User, Flight, Passenger, Ticket
@@ -23,6 +24,7 @@ def login():
 
 @auth.route('/logout')
 def logout():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
@@ -35,45 +37,51 @@ def logout():
 def sign_up():
 
     if request.method == 'POST':
+
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
+
         age = request.form.get('signupBirth')
         DoB = date(int(age[0:4]), int(age[5:7]), int(age[8:10]))
+
         email = request.form.get('signupEmail')
         phone = request.form.get('signupPhone')
         address = request.form.get('signupAddress')
         zip_code = request.form.get('zip_code')
+
         password = request.form.get('signupPassword')
         passwordConfirm = request.form.get('signupPasswordConfirm')
 
         # Validation
         if len(firstName) < 3:
             flash('First name must be greater than 3 characters.', category='error')
+
         elif len(lastName) < 3:
             flash('Last name must be greater than 3 characters.', category='error')
+        
         elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
+        
         elif User.emailExists(email):
             flash('Email already exists.', category='error')
+        
         elif len(phone) < 10:
             flash('Phone number must be greater than 10 characters.',
                   category='error')
+        
         elif User.phoneExists(phone):
             flash('Phone number already exists.', category='error')
+        
         elif len(password) < 7:
             flash('Password must be greater than 7 characters.', category='error')
+        
         elif password != passwordConfirm:
             flash('Passwords do not match.', category='error')
+        
         else:
-
             User.insertUser(firstName, lastName, email, password, DoB, phone, address, zip_code)
-
-
-
             User.userLogin(email, password)
             flash('Account created!', category='success')
-            # Add user to database
-
             return redirect(url_for('auth.login'))
 
     return render_template("register.html")
@@ -87,6 +95,7 @@ def admin():
         return redirect(url_for('views.restricted'))
 
     if request.method == 'POST':
+
         if (request.form.get('action') == 'deleteUser'):
             User.dropUserRecord_byID(request.form.get('userID'))
             flash('User deleted!', category='success')
@@ -100,29 +109,32 @@ def admin():
             flash('Flight added!', category='success')
 
     users = User.getAllUsers()
-
     flights = Flight.getFlights()
 
-    return render_template("admin.html", userList=users, flightList=flights)
+    return render_template("admin.html", 
+            userList=users, 
+            flightList=flights)
 
 @auth.route('/processPayment', methods=['GET', 'POST'])
 def processPayment():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
     
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
         Ticket.insertTicket(data)
         return "success"
 
 
 @auth.route('/passengerDetails', methods=['GET', 'POST'])
 def passengerDetails():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
+
     if request.method == "POST":
         passengerIDs = request.get_json()
         passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerIDs)
@@ -132,25 +144,42 @@ def passengerDetails():
 
 @auth.route('/booking', methods=['GET', 'POST'])
 def booking():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
     flight = Flight.getFlight(id=request.args.get('flightID'))
     flight_date = request.args.get('flight_date')
+    fixedList =[]
+
+    totalTickets = Ticket.getTickets_Left_ByDate(flight_date, flight[0][0])
+
+    innerTuple = flight[0]
+    listConvert = list(innerTuple)
+    listConvert[6] -= totalTickets
+    
+    if(listConvert[6] == 0):
+        flash(message='No tickets left! Please try another date!', category='error')
+        return redirect(url_for('auth.search'))
+
+    fixedList.append(tuple(listConvert)) 
+
     passengers = Passenger.getPassengers_byUserID()
 
-    
-
-    print("in booking finish")
-    return render_template("booking.html", flight=flight, flight_date=flight_date, passengers=passengers)
+    return render_template("booking.html", 
+            flight=fixedList, 
+            flight_date=flight_date, 
+            passengers=passengers)
 
 
 @auth.route('/search', methods=['GET', 'POST'])
 def search():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
+
 
     if request.is_json:
 
@@ -158,26 +187,26 @@ def search():
             departure = request.args.get('departure')
             destination = request.args.get('destination')
             return jsonify(Ajax.Flight.search(departure, destination))
-        
-
     
     return render_template(
-        "search.html", 
-        flightDepartNames=Flight.getFlight_Distinct_Depart(),
-        flightDestNames=Flight.getFlight_Distinct_Dest()
-        )
+            "search.html", 
+            flightDepartNames=Flight.getFlight_Distinct_Depart(),
+            flightDestNames=Flight.getFlight_Distinct_Dest()
+            )
 
 
 @auth.route('/passengers', methods=['GET', 'POST'])
 def passengers():
+    datenow = (str)(datetime.now().strftime('%Y-%m-%d'))
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
 
     passengers = Passenger.getPassengers_byUserID()
 
-
     if request.method == 'POST':
+
         if (request.form.get('action') == 'deletePassenger'):
             Passenger.deletePassenger(request.form.get('passengerID'))
             flash('Passenger deleted!', category='success')
@@ -194,12 +223,11 @@ def passengers():
 
             flash('Passenger added!', category='success')
         
-           
-    
-    return render_template("passengers.html", passengerList=passengers)
+    return render_template("passengers.html", passengerList=passengers, datenow=datenow)
 
 @auth.route('/tickets', methods=['GET', 'POST'])
 def tickets():
+
     if(not User.isLoggedin()):
         flash('You are not logged in.', category='error')
         return redirect(url_for('auth.login'))
@@ -208,16 +236,19 @@ def tickets():
         tickets = Ticket.getTickets_byUserID()
         flightInfo = Flight.getFlightbyIDforTicket(tickets)
         length = len(tickets)
-
         first_names = Passenger.getPassenger_byPassengerID(tickets)
-        print(first_names)
-        return render_template("tickets.html", ticketList=tickets, flightInfo=flightInfo, length=length, first_names=first_names)
+
+        return render_template("tickets.html", 
+                ticketList=tickets, 
+                flightInfo=flightInfo, 
+                length=length, 
+                first_names=first_names)
 
 @auth.route('/process', methods=['POST'])
 def process():
+
     departure = None
     destination = None
-
     departure = request.form.get('departure')
     destination = request.form.get('destination')
 

@@ -5,7 +5,7 @@ from flask import flash, session
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-admins = [1]
+admins = [1,2]
 
 
 db = sql.connect(
@@ -20,7 +20,9 @@ cursor = db.cursor()
 
 ##
 ##
-##### Flash Handling
+#####   Flash Handling
+##
+##
 
 class Flash():
     def error(message):
@@ -35,19 +37,14 @@ class Flash():
     def info(message):
         flash(message, category='info')
 
-
-
-
 ##
 ##
-##### Ticket Handling
+#####   Ticket Handling
 ##
 ##
 
 class Ticket:
     def insertTicket(data):
-        print("inserting ticket")
-
         for each in data:
 
             passenger_id = each.get('passenger_id')
@@ -56,68 +53,61 @@ class Ticket:
             luggage_type = each.get('luggageType')
             ticket_type = each.get('ticketType')
             
-            print(each)
-
             cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type) VALUES (%s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type))
-            print("inserted ticket")
             db.commit()
             
 
-
-
-        
-
     def getTicket(id):
+
         cursor.execute("SELECT * FROM Tickets WHERE id = %s", (id,))
-        
         return cursor.fetchall()
 
     def getTickets():
+
         cursor.execute("SELECT * FROM Tickets")
-        
         return cursor.fetchall()
     
     def deleteTicket(id):
+
         cursor.execute("DELETE FROM Tickets WHERE id = %s", (id,))
         db.commit()
     
     def getTickets_byUserID():
+
         passengers = Passenger.getPassengers_byUserID()
-        print("printing passengers")
-        print(passengers)
         info = []
-        print()
         
         for passenger in passengers:
             cursor.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],))
             temp = cursor.fetchall()
-            print("printing temp")
-            print(temp)
-            print()
+
             if len(temp) > 1:
                 for each in temp:
-                    print("printing each")
-                    print(each)
                     info.append(each)
+
+            elif len(temp) == 0:
+                return info
+
             else:
                 info.append(temp[0])
 
 
-        print("printing tickets")
-        print(info)
-        print()
-        print()
-
         return info
 
-
-
-
-
+    def getTickets_Left_ByDate(flight_date, flight_id):
+        
+        cursor.execute("SELECT * FROM Tickets WHERE flight_date = %s AND flight_id = %s", (flight_date, flight_id))
+        
+        temp = cursor.fetchall()
+        print(temp)
+        print(len(temp))
+        return len(temp)
+            
+            
 
 ##
 ##
-#####  Passenger Handling
+#####   Passenger Handling
 ##
 ##
 
@@ -127,8 +117,10 @@ class Passenger:
 
         if gender == 1:
             gender = "Male"
+
         elif gender == 2:
             gender = "female"
+
         else:
             gender = "Other"
 
@@ -136,65 +128,55 @@ class Passenger:
         db.commit()
 
     def getPassenger(id):
+
         cursor.execute("SELECT * FROM Passengers WHERE id = %s", (id,))
         return cursor.fetchall()
 
     def getPassengers():
+
         cursor.execute("SELECT * FROM Passengers")
-        
         return cursor.fetchall()
 
     def getPassengers_byUserID():
+
         userID = session.get('userID')
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s", (userID,))
         
         return cursor.fetchall()
 
     def getPassengerByUIDandPID(passengerID):
+
         userID = session.get('userID')
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s AND id = %s", (userID, passengerID))
-        
+
         return cursor.fetchone()
     
     def deletePassenger(id):
+
         cursor.execute("DELETE FROM Passengers WHERE id = %s", (id,))
         db.commit()
 
     def getPassenger_User_FirstName():
+
         id = session.get('userID')
         cursor.execute("SELECT id, first_name FROM Passengers WHERE user_id = %s", (id,))
+        
         return cursor.fetchall()
     
     def getPassenger_byPassengerID(tickets):
         info = []
 
         for ticket in tickets:
-            print("printing passenger id")
-            print(ticket[1])
             cursor.execute("SELECT * FROM Passengers WHERE id = %s", (ticket[1],))
             temp = cursor.fetchall()
-            print("printing temp")
-            print(temp[0][2])
-            
+
             info.append(temp[0][2])
 
-        print("printing passenger info")
-        print(info)
-
         return info
-        
-
-
-
-    
-
-
-
-
 
 ##
 ##
-#####  FLIGHT HANDLING
+#####   FLIGHT HANDLING
 ##
 ##
 
@@ -269,13 +251,9 @@ class Flight:
         
         return cursor.fetchall()
 
-
-
-
-
 ##
 ##
-#####  USER HANDLING
+#####   USER HANDLING
 ##
 ##
 
@@ -375,7 +353,7 @@ class User:
         else:
             return False
 
-    def emailExists():
+    def emailExists(email):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
         user = cursor.fetchone()
         if user:
@@ -383,7 +361,7 @@ class User:
         else:
             return False
     
-    def phoneExists():
+    def phoneExists(phone):
         cursor.execute("SELECT * FROM Users WHERE phone = %s", (phone,))
         user = cursor.fetchone()
         if user:
