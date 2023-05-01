@@ -8,7 +8,7 @@ from .ajax import Ajax
 
 auth = Blueprint('auth', __name__)
 
-# FIX LOGIN MODAL THING
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -21,7 +21,6 @@ def login():
 
     return render_template("login.html")
 
-
 @auth.route('/logout')
 def logout():
 
@@ -31,7 +30,6 @@ def logout():
 
     User.stopSession()
     return redirect(url_for('auth.login'))
-
 
 @auth.route('/register', methods=['GET', 'POST'])
 def sign_up():
@@ -86,7 +84,6 @@ def sign_up():
 
     return render_template("register.html")
 
-
 @auth.route('/edit_profile', methods=['POST'])
 def edit_profile():
     
@@ -116,9 +113,6 @@ def edit_profile():
 
             return "Account Updated!"
             
-
-
-
 @auth.route('/profile', methods=['GET'])
 def profile():
 
@@ -128,7 +122,6 @@ def profile():
 
     return render_template("profile.html", 
             user=User.getUser())
-
 
 @auth.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -186,7 +179,6 @@ def processPayment():
         Ticket.insertTicket(data)
         return "success"
 
-
 @auth.route('/passengerDetails', methods=['GET', 'POST'])
 def passengerDetails():
 
@@ -199,8 +191,6 @@ def passengerDetails():
         passengerValid = Ajax.Flight.getPassengerDetailsByID(passengerIDs)
         return jsonify(passengerValid)
    
-
-
 @auth.route('/booking', methods=['GET', 'POST'])
 def booking():
 
@@ -231,7 +221,6 @@ def booking():
             flight_date=flight_date, 
             passengers=passengers)
 
-
 @auth.route('/search', methods=['GET', 'POST'])
 def search():
 
@@ -252,7 +241,6 @@ def search():
             flightDepartNames=Flight.getFlight_Distinct_Depart(),
             flightDestNames=Flight.getFlight_Distinct_Dest()
             )
-
 
 @auth.route('/passengers', methods=['GET', 'POST'])
 def passengers():

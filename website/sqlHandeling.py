@@ -169,13 +169,6 @@ class Ticket:
 
         return result
     
-   
-        
-
-   
-
-            
-            
 
 ##
 ##
