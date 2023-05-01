@@ -1,9 +1,8 @@
-# FlaskSQLCoursework v5.5.1
+# FlaskSQLCoursework v6
 demonstraiting coursework progression
 
 
-
-if youre reading this- gtfo cos idk how you are in a private repo
+if youre not my lecturer then go away cos idk how you got access to this
 
 ======
 
