@@ -11,13 +11,21 @@
     .TaC{
         text-align: center;
     }
+
+    @media (max-width: 768px) {
+        .regMain {
+            width: 95%;
+        }
+    }
 </style>
 
     <div class="container-fluid regMain">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" style="overflow: scroll;">
                 <h4 class="card-title">View your tickets!</h4>
                 <p class="card-text">Here, you can easily check your flight information and request a cancellation</p>
+
+                
 
                 <hr>
 
@@ -66,10 +74,10 @@
                             </td>
                             <td class="TaC">
 
-                                <form method="POST">
-                                    <input type="checkbox" name="ConfirmCancel" value="ConfirmCancel" class="styleInline" required>
-                                    <input type="hidden" name="action" value="requestCancel" class="styleInline">
-                                    <input type="hidden" name="ticketID" value="{{ticketList[x][0][0]}}" class="styleInline">
+                                <form action="/delete_ticket" method="POST">
+                                    <input type="checkbox" name="ConfirmCancel value="" class="styleInline" required>
+                                    <input type="hidden" name="action" value="requestCancel">
+                                    <input type="hidden" name="ticketID" value="{{ticketList[x][0]}}">
                                     <button type="submit" class="btn btn-danger styleInline" style="margin-left:10px">Cancel</button>
                                 </form>
 
@@ -82,8 +90,32 @@
                 </table>
 
 
+                {% if (length == 0) %}
+                <br>
+                <h4 class="card-text" style="text-align:center">You have no tickets!</h4>
+                <br>
+
+                <a class="btn btn-outline-success w-100" href="/search" >Book a Holiday</a>
+
+                {% else %}
+                <br>
+                <h4 class="card-text" style="text-align:center">You have {{length}} tickets!</h4>
+                <br>
+
+                <a class="btn btn-outline-success w-100" onclick="print()">Save Tickets!</a>
+                {% endif %}
+
             </div>
         </div>
     </div>
+
+
+    <script>
+        var listToRemove = [];
+        function confirmCancel(ticketID) {
+            listToRemove.push();
+            
+        }
+    </script>
 
 {% endblock %}

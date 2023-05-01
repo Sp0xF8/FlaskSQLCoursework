@@ -1,5 +1,5 @@
 import mysql.connector as sql
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import flash, session
 
@@ -17,10 +17,49 @@ db = sql.connect(
 
 cursor = db.cursor()
 
+def WorkOutPrice(flight_id, ticket_type, days_before_flight):
+
+    cursor.execute("SELECT * FROM Flights WHERE id = %s", (flight_id,))
+    flight = cursor.fetchall()
+    price = flight[0][5]
+
+    if ticket_type == 2:
+        price *= 2
+
+
+    if (days_before_flight <= 90 and days_before_flight >= 80):
+        price *= 0.8
+
+    elif (days_before_flight < 80 and days_before_flight >= 60):
+        price *= 0.9
+
+    elif (days_before_flight < 60 and days_before_flight >= 45):
+        price *= 0.95
+
+    return price
+
+
+
+class HelperFunctions:
+
+    def PriceHelper(data):
+        total_sales = 0
+
+        for info in data:
+            days_before_flight = info[3] - info[6]
+            days_before_flight = days_before_flight.days
+            total_sales += WorkOutPrice(info[2], info[4], days_before_flight)
+
+        return total_sales
+
+    
+        
 
 ##
 ##
-##### Flash Handling
+#####   Flash Handling
+##
+##
 
 class Flash():
     def error(message):
@@ -35,19 +74,14 @@ class Flash():
     def info(message):
         flash(message, category='info')
 
-
-
-
 ##
 ##
-##### Ticket Handling
+#####   Ticket Handling
 ##
 ##
 
 class Ticket:
     def insertTicket(data):
-        print("inserting ticket")
-
         for each in data:
 
             passenger_id = each.get('passenger_id')
@@ -55,69 +89,90 @@ class Ticket:
             flight_date = each.get('flight_date')
             luggage_type = each.get('luggageType')
             ticket_type = each.get('ticketType')
+            purchase_date = (str)(datetime.now().strftime('%Y-%m-%d'))
             
-            print(each)
-
-            cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type) VALUES (%s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type))
-            print("inserted ticket")
+            cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type, purchase_date) VALUES (%s, %s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type, purchase_date))
             db.commit()
             
 
-
-
-        
-
     def getTicket(id):
+
         cursor.execute("SELECT * FROM Tickets WHERE id = %s", (id,))
-        
         return cursor.fetchall()
 
     def getTickets():
+
         cursor.execute("SELECT * FROM Tickets")
-        
         return cursor.fetchall()
     
     def deleteTicket(id):
+
         cursor.execute("DELETE FROM Tickets WHERE id = %s", (id,))
         db.commit()
     
     def getTickets_byUserID():
+
         passengers = Passenger.getPassengers_byUserID()
-        print("printing passengers")
-        print(passengers)
         info = []
-        print()
-        
+
         for passenger in passengers:
             cursor.execute("SELECT * FROM Tickets WHERE passenger_id = %s", (passenger[0],))
             temp = cursor.fetchall()
-            print("printing temp")
-            print(temp)
-            print()
+
             if len(temp) > 1:
                 for each in temp:
-                    print("printing each")
-                    print(each)
                     info.append(each)
+
+            elif len(temp) == 0:
+                pass
+
             else:
                 info.append(temp[0])
 
-
-        print("printing tickets")
-        print(info)
-        print()
-        print()
-
         return info
 
+    def getTickets_Left_ByDate(flight_date, flight_id):
+        
+        cursor.execute("SELECT * FROM Tickets WHERE flight_date = %s AND flight_id = %s", (flight_date, flight_id))
+        
+        temp = cursor.fetchall()
+
+        return len(temp)
+
+    def getTickets_byFlightID(flight_id):
+            
+            cursor.execute("SELECT * FROM Tickets WHERE flight_id = %s", (flight_id,))
+            return cursor.fetchall()
+    
+    def getMonthlySales():
+
+        #get current date 30 days ago in yyy-mm-dd format
+        mongth_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        
 
 
+        cursor.execute("SELECT * FROM Tickets WHERE purchase_date BETWEEN %s AND %s", (mongth_ago, datetime.now().strftime('%Y-%m-%d')))
+        temp = cursor.fetchall()
+        
+        
+        return HelperFunctions.PriceHelper(temp)
 
+    
+    def bestCustomer():
+        cursor.execute("SELECT u.*, COUNT(t.passenger_id) AS num_tickets FROM Users u JOIN Passengers p ON u.id = p.user_id JOIN Tickets t ON p.id = t.passenger_id GROUP BY u.id ORDER BY num_tickets DESC LIMIT 3;")
+        
+        temp = cursor.fetchall()
+        result = []
 
+        for each in temp:
+            result.append([each[0], each[1], each[2], each[3]])
+
+        return result
+    
 
 ##
 ##
-#####  Passenger Handling
+#####   Passenger Handling
 ##
 ##
 
@@ -127,8 +182,10 @@ class Passenger:
 
         if gender == 1:
             gender = "Male"
+
         elif gender == 2:
             gender = "female"
+
         else:
             gender = "Other"
 
@@ -136,65 +193,55 @@ class Passenger:
         db.commit()
 
     def getPassenger(id):
+
         cursor.execute("SELECT * FROM Passengers WHERE id = %s", (id,))
         return cursor.fetchall()
 
     def getPassengers():
+
         cursor.execute("SELECT * FROM Passengers")
-        
         return cursor.fetchall()
 
     def getPassengers_byUserID():
+
         userID = session.get('userID')
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s", (userID,))
         
         return cursor.fetchall()
 
     def getPassengerByUIDandPID(passengerID):
+
         userID = session.get('userID')
         cursor.execute("SELECT * FROM Passengers WHERE user_id = %s AND id = %s", (userID, passengerID))
-        
+
         return cursor.fetchone()
     
     def deletePassenger(id):
+
         cursor.execute("DELETE FROM Passengers WHERE id = %s", (id,))
         db.commit()
 
     def getPassenger_User_FirstName():
+
         id = session.get('userID')
         cursor.execute("SELECT id, first_name FROM Passengers WHERE user_id = %s", (id,))
+        
         return cursor.fetchall()
     
     def getPassenger_byPassengerID(tickets):
         info = []
 
         for ticket in tickets:
-            print("printing passenger id")
-            print(ticket[1])
             cursor.execute("SELECT * FROM Passengers WHERE id = %s", (ticket[1],))
             temp = cursor.fetchall()
-            print("printing temp")
-            print(temp[0][2])
-            
+
             info.append(temp[0][2])
 
-        print("printing passenger info")
-        print(info)
-
         return info
-        
-
-
-
-    
-
-
-
-
 
 ##
 ##
-#####  FLIGHT HANDLING
+#####   FLIGHT HANDLING
 ##
 ##
 
@@ -224,11 +271,7 @@ class Flight:
             cursor.execute("SELECT * FROM Flights WHERE id = %s", (ticket[2],))
             temp = cursor.fetchall()
             data.append(temp[0])
-        
-        print("printing flights")
-        print(data)
-        print()
-        print()
+    
         return data
 
 
@@ -269,13 +312,9 @@ class Flight:
         
         return cursor.fetchall()
 
-
-
-
-
 ##
 ##
-#####  USER HANDLING
+#####   USER HANDLING
 ##
 ##
 
@@ -330,6 +369,17 @@ class User:
         session.pop('firstName', None)
         flash('Logged out successfully!', category='success')
 
+    def updateUser(first_name, last_name, email, password, phone, address, zip_code):
+
+        password2 = generate_password_hash(password, method='sha256')
+
+        cursor.execute("UPDATE Users SET first_name = %s, last_name = %s, email = %s, password = %s, phone = %s, address = %s, zip = %s WHERE id = %s", (first_name, last_name, email, password2, phone, address, zip_code, session.get('userID')))
+        db.commit()
+
+    def updateUser_noPass(first_name, last_name, email, phone, address, zip_code):
+
+        cursor.execute("UPDATE Users SET first_name = %s, last_name = %s, email = %s, phone = %s, address = %s, zip = %s WHERE id = %s", (first_name, last_name, email, phone, address, zip_code, session.get('userID')))
+        db.commit()
 
     def loginHelperEmail(email):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
@@ -339,6 +389,24 @@ class User:
         else:
             return False
 
+    def getUser():
+        if session.get('loggedin'):
+            cursor.execute("SELECT * FROM Users WHERE id = %s", (session.get('userID'),))
+            user = cursor.fetchone()
+            return user
+        else:
+            return False
+
+    def passCheck(password):
+        cursor.execute("SELECT * FROM Users WHERE id = %s", (session.get('userID'),))
+        user = cursor.fetchone()
+        if user:
+            if check_password_hash(user[4], password):
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def userLogin(email, password):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
@@ -375,7 +443,7 @@ class User:
         else:
             return False
 
-    def emailExists():
+    def emailExists(email):
         cursor.execute("SELECT * FROM Users WHERE email = %s", (email,))
         user = cursor.fetchone()
         if user:
@@ -383,7 +451,7 @@ class User:
         else:
             return False
     
-    def phoneExists():
+    def phoneExists(phone):
         cursor.execute("SELECT * FROM Users WHERE phone = %s", (phone,))
         user = cursor.fetchone()
         if user:
