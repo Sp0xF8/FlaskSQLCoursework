@@ -36,10 +36,27 @@
         margin: 1rem;
     }
 
+    .flight_btn_phone{
+        display: none;
+    }
+
+    a:link { text-decoration: none; }
+
+
     @media (max-width: 768px) {
         .dashboard_container > .card {
             width: 100%;
 
+        }
+
+        .flight_btn_pc{
+            display: none;
+        }
+
+        .flight_btn_phone{
+            display: block;
+            width:75%;
+            margin:auto;
         }
         
     }
@@ -68,23 +85,24 @@
                         <div class="card" id="top_customers">
                             <div class="card-body TaC">
                                 <h5>Top Customer</h5>
-                                <p>Top Customer:</p>
+                                <p>Top Customer: <a stlye="text-decoration:none;" href = "mailto:{{best_customers[0][3]}}"><b>{{best_customers[0][1]}}</b></a></p>
                             </div>
                         </div>
 
                         <div class="card" id="sales_by_journey">
                             <div class="card-body TaC">
                                 <h5>Sales by Journey</h5>
-                                <p></p>
+                                <p id="total_sales"></p>
 
                                 <div class="input-group mb-3">
-                                    <label class="input-group-text" for="departure">Flight</label>
-                                    <select class="form-select" id="departure">
+                                    <label class="input-group-text" for="sales_flight">Flight</label>
+                                    <select class="form-select" id="sales_flight" value="1" onchange="getSales()">
                                         <option></option>
                                         {% for flight in flightList %}
-                                        <option value="flight[0]">{{flight[1]}} -> {{flight[2]}}</option>
+                                        <option value="{{flight[0]}}" >{{flight[1]}} -> {{flight[2]}}</option>
                                         {% endfor %}
                                     </select>
+
                                 </div>
                             </div>
                         </div> 
@@ -267,5 +285,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    function getSales(){
+        var flight_id = document.getElementById("sales_flight").value;
+        
+
+        $.ajax({
+            url: "/admin",
+            type: "get",
+            contentType: 'application/json',
+            data: {flight_id: flight_id},
+            success: function (data) {
+                console.log(data)
+                document.getElementById("total_sales").innerHTML = `
+                Total Tickets Sold: <b> ` + data.number_of_tickets + `</b>
+                <br>
+                Total Sales: <b> £` + data.total_sales + `</b>
+                `;
+            }
+        });
+    }
+</script>
 
 {% endblock %}

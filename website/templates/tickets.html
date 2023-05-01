@@ -96,6 +96,13 @@
                 <br>
 
                 <a class="btn btn-outline-success w-100" href="/search" >Book a Holiday</a>
+
+                {% else %}
+                <br>
+                <h4 class="card-text" style="text-align:center">You have {{length}} tickets!</h4>
+                <br>
+
+                <a class="btn btn-outline-success w-100" onclick="print()">Save Tickets!</a>
                 {% endif %}
 
             </div>

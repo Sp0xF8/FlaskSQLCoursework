@@ -17,28 +17,43 @@ db = sql.connect(
 
 cursor = db.cursor()
 
-
-
 def WorkOutPrice(flight_id, ticket_type, days_before_flight):
-    
+
     cursor.execute("SELECT * FROM Flights WHERE id = %s", (flight_id,))
     flight = cursor.fetchall()
     price = flight[0][5]
-    
+
     if ticket_type == 2:
         price *= 2
 
-    
+
     if (days_before_flight <= 90 and days_before_flight >= 80):
         price *= 0.8
 
     elif (days_before_flight < 80 and days_before_flight >= 60):
         price *= 0.9
- 
+
     elif (days_before_flight < 60 and days_before_flight >= 45):
         price *= 0.95
 
     return price
+
+
+
+class HelperFunctions:
+
+    def PriceHelper(data):
+        total_sales = 0
+
+        for info in data:
+            days_before_flight = info[3] - info[6]
+            days_before_flight = days_before_flight.days
+            total_sales += WorkOutPrice(info[2], info[4], days_before_flight)
+
+        return total_sales
+
+    
+        
 
 ##
 ##
@@ -123,24 +138,38 @@ class Ticket:
         temp = cursor.fetchall()
 
         return len(temp)
+
+    def getTickets_byFlightID(flight_id):
+            
+            cursor.execute("SELECT * FROM Tickets WHERE flight_id = %s", (flight_id,))
+            return cursor.fetchall()
     
     def getMonthlySales():
 
         #get current date 30 days ago in yyy-mm-dd format
         mongth_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-        total_sales = 0
+        
 
 
         cursor.execute("SELECT * FROM Tickets WHERE purchase_date BETWEEN %s AND %s", (mongth_ago, datetime.now().strftime('%Y-%m-%d')))
         temp = cursor.fetchall()
-        for each in temp:
-            days_before_flight = each[3] - each[6]
-            days_before_flight = days_before_flight.days
-            total_sales += WorkOutPrice(each[2], each[4], days_before_flight)
-            print(WorkOutPrice(each[2], each[4], days_before_flight))
-        print(total_sales)
         
-        return total_sales
+        
+        return HelperFunctions.PriceHelper(temp)
+
+    
+    def bestCustomer():
+        cursor.execute("SELECT u.*, COUNT(t.passenger_id) AS num_tickets FROM Users u JOIN Passengers p ON u.id = p.user_id JOIN Tickets t ON p.id = t.passenger_id GROUP BY u.id ORDER BY num_tickets DESC LIMIT 3;")
+        
+        temp = cursor.fetchall()
+        result = []
+
+        for each in temp:
+            result.append([each[0], each[1], each[2], each[3]])
+
+        return result
+    
+   
         
 
    

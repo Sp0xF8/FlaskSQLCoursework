@@ -3,7 +3,7 @@ from datetime import date
 from datetime import datetime
 
 
-from .sqlHandeling import User, Flight, Passenger, Ticket
+from .sqlHandeling import User, Flight, Passenger, Ticket, HelperFunctions
 from .ajax import Ajax
 
 auth = Blueprint('auth', __name__)
@@ -139,19 +139,31 @@ def admin():
 
     
 
+    if request.is_json:
+
+        if request.method == 'GET':
+            print("in json")    
+            print(request.args.get('flight_id'))
+            return Ajax.Tickets.getSales(request.args.get('flight_id'))
+
+    
+
     if request.method == 'POST':
 
         if (request.form.get('action') == 'deleteUser'):
             User.dropUserRecord_byID(request.form.get('userID'))
             flash('User deleted!', category='success')
+            return redirect(url_for('auth.admin'))
 
         elif (request.form.get('action') == 'deleteFlight'):
             Flight.deleteFlight(request.form.get('flightID'))
             flash('Flight deleted!', category='success')
+            return redirect(url_for('auth.admin'))
 
         elif (request.form.get('action') == 'createFlight'):
             Flight.insertFlight(request.form.get('departure'), request.form.get('destination'), request.form.get('departing'), request.form.get('arriving'), request.form.get('price'))
             flash('Flight added!', category='success')
+            return redirect(url_for('auth.admin'))
 
     users = User.getAllUsers()
     flights = Flight.getFlights()
@@ -159,7 +171,8 @@ def admin():
     return render_template("admin.html", 
             userList=users, 
             flightList=flights,
-            monthly_sales=Ticket.getMonthlySales())
+            monthly_sales=Ticket.getMonthlySales(),
+            best_customers=Ticket.bestCustomer())
 
 @auth.route('/processPayment', methods=['GET', 'POST'])
 def processPayment():
@@ -256,6 +269,7 @@ def passengers():
         if (request.form.get('action') == 'deletePassenger'):
             Passenger.deletePassenger(request.form.get('passengerID'))
             flash('Passenger deleted!', category='success')
+            return redirect(url_for('auth.passengers'))
             
         elif (request.form.get('action') == 'createPassenger'):
             Passenger.insertPassenger(
@@ -268,6 +282,7 @@ def passengers():
             )
 
             flash('Passenger added!', category='success')
+            return redirect(url_for('auth.passengers'))
         
     return render_template("passengers.html", passengerList=passengers, datenow=datenow)
 

@@ -1,4 +1,4 @@
-from .sqlHandeling import Flight, Flash, Passenger
+from .sqlHandeling import Flight, Flash, Passenger,Ticket, HelperFunctions
 
 
 def departORdest(departure, destination):
@@ -79,6 +79,7 @@ class Ajax:
                 return result
 
         def getPassengerDetailsByID(passenger_id):
+
             passengerInvalid = []
 
 
@@ -138,7 +139,23 @@ class Ajax:
                     }})
                 return passengerValid
         
-            
+    class Tickets:
+
+        def getSales(flight_id):
+
+            tickets = Ticket.getTickets_byFlightID(flight_id)
+
+            result = {'number_of_tickets': len(tickets)}
+    
+            total_sales = HelperFunctions.PriceHelper(tickets)
+            result['total_sales'] = total_sales
+
+            return result
+
+
+
+
+    
 
 
             
