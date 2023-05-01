@@ -137,6 +137,8 @@ def admin():
         flash('You require greater permissions to access this page!', category='error')
         return redirect(url_for('views.restricted'))
 
+    
+
     if request.method == 'POST':
 
         if (request.form.get('action') == 'deleteUser'):
@@ -156,7 +158,8 @@ def admin():
 
     return render_template("admin.html", 
             userList=users, 
-            flightList=flights)
+            flightList=flights,
+            monthly_sales=Ticket.getMonthlySales())
 
 @auth.route('/processPayment', methods=['GET', 'POST'])
 def processPayment():

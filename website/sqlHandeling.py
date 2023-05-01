@@ -1,5 +1,5 @@
 import mysql.connector as sql
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import flash, session
 
@@ -17,6 +17,28 @@ db = sql.connect(
 
 cursor = db.cursor()
 
+
+
+def WorkOutPrice(flight_id, ticket_type, days_before_flight):
+    
+    cursor.execute("SELECT * FROM Flights WHERE id = %s", (flight_id,))
+    flight = cursor.fetchall()
+    price = flight[0][5]
+    
+    if ticket_type == 2:
+        price *= 2
+
+    
+    if (days_before_flight <= 90 and days_before_flight >= 80):
+        price *= 0.8
+
+    elif (days_before_flight < 80 and days_before_flight >= 60):
+        price *= 0.9
+ 
+    elif (days_before_flight < 60 and days_before_flight >= 45):
+        price *= 0.95
+
+    return price
 
 ##
 ##
@@ -52,8 +74,9 @@ class Ticket:
             flight_date = each.get('flight_date')
             luggage_type = each.get('luggageType')
             ticket_type = each.get('ticketType')
+            purchase_date = (str)(datetime.now().strftime('%Y-%m-%d'))
             
-            cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type) VALUES (%s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type))
+            cursor.execute("INSERT INTO Tickets (passenger_id, flight_id, flight_date, ticket_type, luggage_type, purchase_date) VALUES (%s, %s, %s, %s, %s, %s)", (passenger_id, flight_id, flight_date, ticket_type, luggage_type, purchase_date))
             db.commit()
             
 
@@ -100,6 +123,28 @@ class Ticket:
         temp = cursor.fetchall()
 
         return len(temp)
+    
+    def getMonthlySales():
+
+        #get current date 30 days ago in yyy-mm-dd format
+        mongth_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        total_sales = 0
+
+
+        cursor.execute("SELECT * FROM Tickets WHERE purchase_date BETWEEN %s AND %s", (mongth_ago, datetime.now().strftime('%Y-%m-%d')))
+        temp = cursor.fetchall()
+        for each in temp:
+            days_before_flight = each[3] - each[6]
+            days_before_flight = days_before_flight.days
+            total_sales += WorkOutPrice(each[2], each[4], days_before_flight)
+            print(WorkOutPrice(each[2], each[4], days_before_flight))
+        print(total_sales)
+        
+        return total_sales
+        
+
+   
+
             
             
 

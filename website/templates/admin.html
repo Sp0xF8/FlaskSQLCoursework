@@ -20,6 +20,29 @@
     .ma{
         margin: auto;
     }
+
+    .dashboard_container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #profit {
+        color: rgb(0, 224, 0);
+    }
+    .dashboard_container > .card {
+        width: 40%;
+        margin: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard_container > .card {
+            width: 100%;
+
+        }
+        
+    }
 </style>
 
 
@@ -28,6 +51,47 @@
         <div class="card-body">
             <h4 class="card-title">Admin Panel</h4>
             <p class="card-text">Welcome to the Admin Panel</p>
+
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title TaC">Dashboard</h4>
+                    <div class="dashboard_container">
+
+                        <div class="card" id="monthly_sales">
+                            <div class="card-body TaC">
+                                <h5>Monthly Sales</h5>
+                                <p>Monthly Sales: <b id="profit">£{{monthly_sales}}</b></p>
+                            </div>
+                        </div>
+
+                        <div class="card" id="top_customers">
+                            <div class="card-body TaC">
+                                <h5>Top Customer</h5>
+                                <p>Top Customer:</p>
+                            </div>
+                        </div>
+
+                        <div class="card" id="sales_by_journey">
+                            <div class="card-body TaC">
+                                <h5>Sales by Journey</h5>
+                                <p></p>
+
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="departure">Flight</label>
+                                    <select class="form-select" id="departure">
+                                        <option></option>
+                                        {% for flight in flightList %}
+                                        <option value="flight[0]">{{flight[1]}} -> {{flight[2]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+
+                </div>
+            </div>
 
 
 
