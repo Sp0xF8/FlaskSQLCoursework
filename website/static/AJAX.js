@@ -15,9 +15,9 @@ $(document).ready(function() {
                 dateTomorrow.setDate(dateTomorrow.getDate() + 1);
                 var tomorrow = dateTomorrow.toISOString().slice(0, 10);
 
-                var twoYearsDate = new Date();
-                twoYearsDate.setDate(twoYearsDate.getDate() + 730);
-                var twoYears = twoYearsDate.toISOString().slice(0, 10);
+                var maxDate = new Date();
+                maxDate.setDate(maxDate.getDate() + 90);
+                var ninetyDays = maxDate.toISOString().slice(0, 10);
 
                 
                 
@@ -61,7 +61,7 @@ $(document).ready(function() {
                                     </div>
 
                                     <form action="/booking" method="GET">
-                                        <input type="date" class="form-control w-75" style="margin:auto;margin-top:1rem;margin-bottom:1rem;" name="flight_date" min="` + tomorrow + `" max="` + twoYears + `" required>
+                                        <input type="date" class="form-control w-75" style="margin:auto;margin-top:1rem;margin-bottom:1rem;" name="flight_date" min="` + tomorrow + `" max="` + ninetyDays + `" required>
                                         <input type="hidden" name="flightID" value="` + response[x].flight_id + `">
                                         <input type="hidden" name="action" value="selectFlight">
                                         <button class="btn btn-primary w-50" type="submit">Book</button>

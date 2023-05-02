@@ -39,7 +39,6 @@ def WorkOutPrice(flight_id, ticket_type, days_before_flight):
     return price
 
 
-
 class HelperFunctions:
 
     def PriceHelper(data):
@@ -253,13 +252,16 @@ class Flight:
 
 
         ## Returns an array of all flights
+    
     def getFlights():
+
         cursor.execute("SELECT * FROM Flights")
         
         return cursor.fetchall()
 
 
         ## Returns a single flight with the given id
+   
     def getFlight(id):
         cursor.execute("SELECT * FROM Flights WHERE id = %s", (id,))
         return cursor.fetchall()
@@ -276,6 +278,7 @@ class Flight:
 
 
         ## Returns an array of flights with the given departure and destination
+    
     def getFlightFromTo(departure, destination):
         cursor.execute("SELECT * FROM Flights WHERE departure = %s AND destination = %s", (departure, destination))
         
@@ -284,11 +287,11 @@ class Flight:
 
 
         ## Returns an array of flights with the given departure
+    
     def getFlightFrom(departure):
         cursor.execute("SELECT * FROM Flights WHERE departure = %s", (departure,))
         
         return cursor.fetchall()
-
 
         ## Returns an array of flights with the given destination
     def getFlightTo(destination):
@@ -298,6 +301,7 @@ class Flight:
 
 
         ## Deleted a flight with the given id
+    
     def deleteFlight(id):
         cursor.execute("DELETE FROM Flights WHERE id = %s", (id,))
         db.commit()

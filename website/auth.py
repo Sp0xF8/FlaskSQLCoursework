@@ -135,8 +135,6 @@ def admin():
     if request.is_json:
 
         if request.method == 'GET':
-            print("in json")    
-            print(request.args.get('flight_id'))
             return Ajax.Tickets.getSales(request.args.get('flight_id'))
 
     

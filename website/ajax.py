@@ -2,19 +2,14 @@ from .sqlHandeling import Flight, Flash, Passenger,Ticket, HelperFunctions
 
 
 def departORdest(departure, destination):
-    if departure == "":
-        print("departure is none")
-        mid = Flight.getFlightTo(destination)
-    elif destination == "":
-        print("destination is none")
-        mid = Flight.getFlightFrom(departure)
-    else:
-        print("both are not none")
-        mid = Flight.getFlightFromTo(departure, destination)
+    if departure == "": ## if departure is empty, then we are searching for flights to the destination
+        return Flight.getFlightTo(destination)
+    elif destination == "": ## if destination is empty, then we are searching for flights from the departure
+        return Flight.getFlightFrom(departure)
+    else: ## if both are not empty, then we are searching for flights from departure to destination
+        return Flight.getFlightFromTo(departure, destination)
 
-    return mid
-
-
+     
 
 class Ajax:
 
